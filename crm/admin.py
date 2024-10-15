@@ -43,7 +43,7 @@ class StateAdmin(admin.ModelAdmin):
 
     
 class DistrictAdmin(admin.ModelAdmin):
-    list_display = ['name', 'code', 'state']
+    list_display = ['name', 'state']
 
 
 class AreaAdmin(admin.ModelAdmin):

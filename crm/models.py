@@ -14,7 +14,6 @@ class State(models.Model):
 
 class District(models.Model):
     name = models.CharField(max_length=150)
-    code = models.CharField(max_length=3)
     state = models.ForeignKey(State, on_delete=models.CASCADE, related_name='districts')
 
     def __str__(self):
@@ -22,7 +21,6 @@ class District(models.Model):
     
     class Meta:
         unique_together = ['name', 'state']
-        unique_together = ['code', 'state']
         ordering = ['state']
     
 
