@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load add_attr %}
-{% block title %}CRM Edit{% endblock %}
+{% block title %}Edit CRM{% endblock %}
 {% block content %}
 <div class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pt-4 pb-2">
             <div class="px-3">
@@ -77,7 +77,7 @@
 
 <div class="w-full mx-auto px-4 py-4">
     <div class="overflow-x-auto shadow-md">
-        <table class="w-full border-spacing-0 border-collapse text-xs text-left rtl:text-right whitespace-nowrap text-gray-500 dark:text-gray-400">
+        <table class="w-full uppercase font-medium border-spacing-0 border-collapse text-xs text-left rtl:text-right whitespace-nowrap text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="px-3 py-3">
@@ -137,17 +137,18 @@
                     </th>
                     <td class="px-3 py-0">
                         {{ entry.area.name }} | 
-                        <span data-tooltip-target="tooltip-{{ entry.area.state }}">
-                        {{ entry.area.state }}
+                        {{ entry.area.district }} |
+                        <span data-tooltip-target="tooltip-state-{{ entry.id }}">
+                        {{ entry.area.district.state.code }}
                         </span>
                     </td>
                     <td class="px-3 py-0">
-                        <span data-tooltip-target="tooltip-{{ entry.stage.id }}">
+                        <span data-tooltip-target="tooltip-stage-{{ entry.id }}">
                         {{ entry.stage.name }}
                         </span>
                     </td>
                     <td class="px-3 py-0">
-                        {% if entry.stage.win != 0%}
+                        {% if entry.stage.win != 0 %}
                         {{ entry.stage.win }}%
                         {% endif %}
                     </td>
@@ -171,23 +172,21 @@
 </div>
 
 {% for entry in entries %}
-<div id="tooltip-{{ entry.area.state }}" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip">
-    {{ entry.area.get_state_display }}
+<div id="tooltip-state-{{ entry.id }}" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip">
+    {{ entry.area.district.state.name }}
     <div class="tooltip-arrow" data-popper-arrow></div>
 </div>
-{% endfor %}
-
-{% for stage in stages %}
-<div id="tooltip-{{ stage.id }}" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip">
-    {{ stage.description }}
+<div id="tooltip-district-{{ entry.id }}" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip">
+    {{ entry.area.district.name }}
     <div class="tooltip-arrow" data-popper-arrow></div>
 </div>
-{% endfor %}
-
-{% for entry in entries %}
+<div id="tooltip-stage-{{ entry.id }}" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip">
+    {{ entry.stage.description }}
+    <div class="tooltip-arrow" data-popper-arrow></div>
+</div>
 <div data-popover id="popover-{{ entry.id }}" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:border-gray-600 dark:bg-gray-800">
     <div class="p-2">
-        {% for admin in entry.administrators.all %}
+        {% for admin in entry.admins.all %}
         <div class="pb-2">
             {% if admin.name %}
             <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3"><span class="flex w-2.5 h-2.5 bg-yellow-300 rounded-full me-1.5 flex-shrink-0"></span><span class="pr-2">{{ admin.name }}</span>{% if admin.designation %}<span class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">{{ admin.designation }}</span>{% endif %}</span>
@@ -201,6 +200,7 @@
         </div>
         <hr class="pb-2" />
         {% endfor %}
+
         {% for doctor in entry.doctors.all %}
         <div class="pb-2">
             {% if doctor.name %}
@@ -215,23 +215,24 @@
         </div>
         <hr class="pb-2" />
         {% endfor %}
-        {% for source in entry.sources.all %}
+
+        {% for reference in entry.references.all %}
         <div class="pb-2">
-            Source Name: {{ source.name }}<br />
-            {% if source.email %}Email: {{ source.email }}<br />{% endif %}
-            {% if source.phone_number %}Phone Number: {{ source.email }}<br />{% endif %}
+            Reference Name: {{ reference.name }}<br />
+            {% if reference.email %}Email: {{ reference.email }}<br />{% endif %}
+            {% if reference.phone_number %}Phone Number: {{ reference.email }}<br />{% endif %}
         </div>
         <hr class="pb-2" />
         {% endfor %}
+
         {% if entry.notes %}
         <div class="pb-2">
-        <strong class="text-bold">Notes</strong><br />
-        {{ entry.notes }}
-        {% endif %}
+            <strong class="text-bold">Notes</strong><br />
+            {{ entry.notes }}
         </div>
-        {% if entry.notes %}
         <hr class="pb-2" />
         {% endif %}
+
         <div data-popper-arrow></div>
         <div class="flex">
             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">

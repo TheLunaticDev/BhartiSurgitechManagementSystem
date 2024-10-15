@@ -125,6 +125,7 @@ class Entry(models.Model):
 
     class Meta:
         verbose_name_plural = 'Entries'
+        ordering = ['stage']
 
 class Doctor(models.Model):
     name = models.CharField(max_length=255)

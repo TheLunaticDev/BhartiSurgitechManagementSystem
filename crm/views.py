@@ -5,7 +5,7 @@ from django.forms import modelformset_factory
 from django.urls import reverse
 from django.db.models import Q
 from .models import (
-    Entry, Stage, District, Doctor, State
+    Area, Entry, Stage, District, Doctor, State, Product,
 )
 from .decorators import group_required
 from sysadmin.models import Manager
@@ -22,15 +22,6 @@ def get_manager_entry_context(request, subordinate_id):
             entries = Entry.objects.all().filter(
                 Q(institute__icontains=query) |
                 Q(area__name__icontains=query) |
-                Q(area__district__name__icontains=query) |
-                Q(area__district__state__name__icontains=query) |
-                Q(stage__description__icontains=query) |
-                Q(stage__name__icontains=query) |
-                Q(stage__win__icontains=query) |
-                Q(expected__icontains=query) |
-                Q(va__icontains=query) |
-                Q(products__name__icontains=query) |
-                Q(products__category__name__icontains=query) |
                 Q(doctors__name__icontains=query) |
                 Q(doctors__speciality__icontains=query) |
                 Q(doctors__designation__icontains=query) |
@@ -43,22 +34,12 @@ def get_manager_entry_context(request, subordinate_id):
                 Q(references__name__icontains=query) |
                 Q(references__email=query) |
                 Q(references__phone_number=query) |
-                Q(notes__icontains=query) |
-                Q(created_on__icontains=query)
+                Q(notes__icontains=query)
             ).filter(owner__in=subordinates)
         else:
             entries = Entry.objects.all().filter(
                 Q(institute__icontains=query) |
                 Q(area__name__icontains=query) |
-                Q(area__district__name__icontains=query) |
-                Q(area__district__state__name__icontains=query) |
-                Q(stage__description__icontains=query) |
-                Q(stage__name__icontains=query) |
-                Q(stage__win__icontains=query) |
-                Q(expected__icontains=query) |
-                Q(va__icontains=query) |
-                Q(products__name__icontains=query) |
-                Q(products__category__name__icontains=query) |
                 Q(doctors__name__icontains=query) |
                 Q(doctors__speciality__icontains=query) |
                 Q(doctors__designation__icontains=query) |
@@ -71,11 +52,10 @@ def get_manager_entry_context(request, subordinate_id):
                 Q(references__name__icontains=query) |
                 Q(references__email=query) |
                 Q(references__phone_number=query) |
-                Q(notes__icontains=query) |
-                Q(created_on__icontains=query)
+                Q(notes__icontains=query)
             ).filter(owner=User.objects.all().get(id=subordinate_id))
     else:
-        if not subordinate_id:
+        if subordinate_id is None:
             entries = Entry.objects.all().filter(owner__in=subordinates)
         else:
             entries = Entry.objects.all().filter(owner=User.objects.all().get(id=subordinate_id))
@@ -96,25 +76,25 @@ def get_manager_entry_context(request, subordinate_id):
         'entries': entries_with_products,
         'subordinates': subordinates,
         'stages': Stage.objects.all(),
-        'state': State.objects.all(),
+        'states': State.objects.all(),
+        'subordinate_id': subordinate_id if subordinate_id is not None else '',
     }
 
 
 def get_entry_context(request):
     query = request.GET.get('q')
+    expected = request.GET.get('expected')
+    va = request.GET.get('va')
+    stage = request.GET.get('stage')
+    area = request.GET.get('area')
+    product = request.GET.get('product')
+
+    entries = Entry.objects.filter(owner=request.user)
+
     if query:
-        entries = Entry.objects.all().filter(
+        entries = entries.filter(
             Q(institute__icontains=query) |
             Q(area__name__icontains=query) |
-            Q(area__district__name__icontains=query) |
-            Q(area__district__state__name__icontains=query) |
-            Q(stage__description__icontains=query) |
-            Q(stage__name__icontains=query) |
-            Q(stage__win__icontains=query) |
-            Q(expected__icontains=query) |
-            Q(va__icontains=query) |
-            Q(products__name__icontains=query) |
-            Q(products__category__name__icontains=query) |
             Q(doctors__name__icontains=query) |
             Q(doctors__speciality__icontains=query) |
             Q(doctors__designation__icontains=query) |
@@ -127,11 +107,23 @@ def get_entry_context(request):
             Q(references__name__icontains=query) |
             Q(references__email=query) |
             Q(references__phone_number=query) |
-            Q(notes__icontains=query) |
-            Q(created_on__icontains=query)
+            Q(notes__icontains=query)
         ).filter(owner=request.user)
-    else:
-        entries = Entry.objects.all().filter(owner=request.user)
+    
+    if expected:
+        entries = entries.filter(expected=expected)
+    
+    if va:
+        entries = entries.filter(va=va)
+
+    if stage:
+        entries = entries.filter(stage=stage)
+    
+    if area:
+        entries = entries.filter(area=area)
+
+    if product:
+        entries = entries.filter(products=product)
 
     entries_with_products = []
 
@@ -147,6 +139,11 @@ def get_entry_context(request):
     
     return {
         'entries': entries_with_products,
+        'stages': Stage.objects.all(),
+        'states': State.objects.all(),
+        'districts': District.objects.all(),
+        'products': Product.objects.all(),
+        'areas': Area.objects.all(),
     }
 
 @login_required
@@ -162,13 +159,20 @@ def edit_view(request):
 @login_required
 def manager_index_view(request, subordinate_id=None):
     context = get_manager_entry_context(request, subordinate_id)
-    return render(request, 'crm/manager_index.html', context)
+    if subordinate_id is None:
+        return render(request, 'crm/manager_index.html', context)
+    else:
+        return render(request, 'crm/manager_index_for_subordinate.html', context)
 
 @login_required
 def manager_edit_view(request, subordinate_id=None):
     context = get_manager_entry_context(request, subordinate_id)
-    request.session['last_manager_edit_link'] = reverse('crm_manager_edit_view', kwargs={'subordinate_id': subordinate_id})
-    return render(request, 'crm/manager_edit.html', context)
+    if subordinate_id is None:
+        request.session['last_manager_edit_link'] = reverse('crm_manager_edit_view')
+        return render(request, 'crm/manager_edit.html', context)
+    else:
+        request.session['last_manager_edit_link'] = reverse('crm_manager_edit_view_with_id', kwargs={'subordinate_id': subordinate_id})
+        return render(request, 'crm/manager_edit_for_subordinate.html', context)
 
 class DistrictAutoComplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
