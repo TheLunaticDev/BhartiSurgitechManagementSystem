@@ -100,10 +100,11 @@ class EntryAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.groups.filter(name='Manager').exists():
-            manager = Manager.objects.get(user=request.user)
-            subordinates = manager.subordinates.all()
-            subordinate_ids = subordinates.values_list('id', flat=True)
-            return qs.filter(owner__in=subordinate_ids)
+            if Manager.objects.filter(user=request.user).exists():
+                manager = Manager.objects.get(user=request.user)
+                subordinates = manager.subordinates.all()
+                subordinate_ids = subordinates.values_list('id', flat=True)
+                return qs.filter(owner__in=subordinate_ids)
         if request.user.groups.filter(name='Employee').exists():
             return qs.filter(owner=request.user)
         return qs

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory
@@ -13,52 +13,45 @@ from dal import autocomplete
 
 def get_manager_entry_context(request, subordinate_id):
     query = request.GET.get('q')
-    manager = Manager.objects.all().get(user=request.user)
+
+    try:
+        manager = Manager.objects.get(user=request.user)
+    except Manager.DoesNotExist:
+        manager = None
+        
     if manager is None:
-        return
+        return {
+            'stages': Stage.objects.all(),
+            'states': State.objects.all(),
+            'subordinate_id': subordinate_id if subordinate_id is not None else '',
+        }
+
     subordinates = manager.subordinates.all()
+    entries = Entry.objects.all()
+
     if query:
-        if not subordinate_id:
-            entries = Entry.objects.all().filter(
-                Q(institute__icontains=query) |
-                Q(area__name__icontains=query) |
-                Q(doctors__name__icontains=query) |
-                Q(doctors__speciality__icontains=query) |
-                Q(doctors__designation__icontains=query) |
-                Q(doctors__email__icontains=query) |
-                Q(doctors__phone_number__icontains=query) |
-                Q(admins__name__icontains=query) |
-                Q(admins__designation__icontains=query) |
-                Q(admins__email__icontains=query) |
-                Q(admins__phone_number__icontains=query) |
-                Q(references__name__icontains=query) |
-                Q(references__email=query) |
-                Q(references__phone_number=query) |
-                Q(notes__icontains=query)
-            ).filter(owner__in=subordinates)
-        else:
-            entries = Entry.objects.all().filter(
-                Q(institute__icontains=query) |
-                Q(area__name__icontains=query) |
-                Q(doctors__name__icontains=query) |
-                Q(doctors__speciality__icontains=query) |
-                Q(doctors__designation__icontains=query) |
-                Q(doctors__email__icontains=query) |
-                Q(doctors__phone_number__icontains=query) |
-                Q(admins__name__icontains=query) |
-                Q(admins__designation__icontains=query) |
-                Q(admins__email__icontains=query) |
-                Q(admins__phone_number__icontains=query) |
-                Q(references__name__icontains=query) |
-                Q(references__email=query) |
-                Q(references__phone_number=query) |
-                Q(notes__icontains=query)
-            ).filter(owner=User.objects.all().get(id=subordinate_id))
+        entries = entries.filter(
+            Q(institute__icontains=query) |
+            Q(area__name__icontains=query) |
+            Q(doctors__name__icontains=query) |
+            Q(doctors__speciality__icontains=query) |
+            Q(doctors__designation__icontains=query) |
+            Q(doctors__email__icontains=query) |
+            Q(doctors__phone_number__icontains=query) |
+            Q(admins__name__icontains=query) |
+            Q(admins__designation__icontains=query) |
+            Q(admins__email__icontains=query) |
+            Q(admins__phone_number__icontains=query) |
+            Q(references__name__icontains=query) |
+            Q(references__email=query) |
+            Q(references__phone_number=query) |
+            Q(notes__icontains=query)
+        )
+
+    if subordinate_id:
+        entries = entries.filter(owner=get_object_or_404(User, id=subordinate_id))
     else:
-        if subordinate_id is None:
-            entries = Entry.objects.all().filter(owner__in=subordinates)
-        else:
-            entries = Entry.objects.all().filter(owner=User.objects.all().get(id=subordinate_id))
+        entries = entries.filter(owner__in=subordinates)
 
     entries_with_products = []
 
