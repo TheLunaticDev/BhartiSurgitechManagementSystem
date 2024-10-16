@@ -51,7 +51,7 @@ def get_manager_entry_context(request, subordinate_id):
     if subordinate_id:
         entries = entries.filter(owner=get_object_or_404(User, id=subordinate_id))
     else:
-        entries = entries.filter(owner__in=subordinates)
+        entries = entries.filter(Q(owner=request.user) | Q(owner__in=subordinates))
 
     entries_with_products = []
 
