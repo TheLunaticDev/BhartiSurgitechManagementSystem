@@ -26,9 +26,24 @@ def get_manager_entry_context(request, subordinate_id):
             'subordinate_id': subordinate_id if subordinate_id is not None else '',
         }
 
+    # Retrieve subordinates under the manager
     subordinates = manager.subordinates.all()
-    entries = Entry.objects.all()
 
+    # Include manager's own entries and subordinate entries
+    print('Before Filter')
+    print(entries)
+    if subordinate_id:
+        # Filter entries belonging to a specific subordinate
+        entries = Entry.objects.filter(owner=get_object_or_404(User, id=subordinate_id))
+        print('Subordinates Found')
+        print(entries)
+    else:
+        # Include both the manager's own entries and subordinate entries
+        entries = Entry.objects.filter(Q(owner=request.user) | Q(owner__in=subordinates))
+        print('subordinates not Found')
+        print(entries)
+
+    # Apply search query if provided
     if query:
         entries = entries.filter(
             Q(institute__icontains=query) |
@@ -43,26 +58,16 @@ def get_manager_entry_context(request, subordinate_id):
             Q(admins__email__icontains=query) |
             Q(admins__phone_number__icontains=query) |
             Q(references__name__icontains=query) |
-            Q(references__email=query) |
-            Q(references__phone_number=query) |
+            Q(references__email__icontains=query) |
+            Q(references__phone_number__icontains=query) |
             Q(notes__icontains=query)
         )
 
-    if subordinate_id:
-        entries = entries.filter(owner=get_object_or_404(User, id=subordinate_id))
-    else:
-        entries = entries.filter(Q(owner=request.user) | Q(owner__in=subordinates))
-
+    # Add products information to entries
     entries_with_products = []
-
     for entry in entries:
-        product_keys = []
-
-        for product in entry.products.all():
-            product_keys.append(product.name)
-
+        product_keys = [product.name for product in entry.products.all()]
         entry.available_products = "  |  ".join(product_keys)
-
         entries_with_products.append(entry)
 
     return {
@@ -72,7 +77,6 @@ def get_manager_entry_context(request, subordinate_id):
         'states': State.objects.all(),
         'subordinate_id': subordinate_id if subordinate_id is not None else '',
     }
-
 
 def get_entry_context(request):
     query = request.GET.get('q')
@@ -98,8 +102,8 @@ def get_entry_context(request):
             Q(admins__email__icontains=query) |
             Q(admins__phone_number__icontains=query) |
             Q(references__name__icontains=query) |
-            Q(references__email=query) |
-            Q(references__phone_number=query) |
+            Q(references__email__icontains=query) |
+            Q(references__phone_number__icontains=query) |
             Q(notes__icontains=query)
         ).filter(owner=request.user)
     
