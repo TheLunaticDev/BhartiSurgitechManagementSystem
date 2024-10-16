@@ -76,6 +76,7 @@ class Product(models.Model):
 
 class Entry(models.Model):
     EXPECTED_CHOICES = [
+        ('-2', 'NOT DEFINED'),
         ('-1', 'BEYOND'),
         ('0', 'JAN'),
         ('1', 'FEB'),
