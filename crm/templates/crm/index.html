@@ -148,8 +148,12 @@
     {{ entry.stage.description }}
     <div class="tooltip-arrow" data-popper-arrow></div>
 </div>
-<div data-popover id="popover-{{ entry.id }}" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:border-gray-600 dark:bg-gray-800">
+<div data-popover id="popover-{{ entry.id }}" role="tooltip" class="absolute z-10 invisible inline-block w-96 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:border-gray-600 dark:bg-gray-800">
     <div class="p-2">
+        <div class="p-2 text-sm text-yellow-800 text-center rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300">
+            <span class="font-medium">{{ entry.institute }}</span>
+        </div>
+        <hr class="text-white mb-2" />
         {% for admin in entry.admins.all %}
         <div class="pb-2">
             {% if admin.name %}

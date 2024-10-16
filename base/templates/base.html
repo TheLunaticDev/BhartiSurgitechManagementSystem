@@ -78,6 +78,12 @@
           </div>
         </nav>
         <main>
+            {% if request.user %}
+            <div class="p-2 mt-2 text-sm text-yellow-800 text-center rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300">
+                <span class="font-medium">You are logged in as {% if request.user.first_name %}{{ request.user.first_name }}{% else %}{{ request.user.username }}{% endif %}.</span>
+            </div>
+            {% endif %}
+ 
             {% block content %}
             {% endblock %}
         </main>
