@@ -11,12 +11,13 @@ from .models import (
     Category, Product, Doctor, Administrator,
     Reference, State, District,
 )
-from .forms import AreaModelForm, DoctorInlineForm, ProductForm
+from .forms import AreaModelForm, DoctorInlineForm, CategoryForm
 from sysadmin.models import Manager
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'products']
+    list_display = ['name', 'products', 'background_color', 'text_color']
+    form = CategoryForm
 
     def products(self, obj):
         return ", ".join([product.name for product in obj.products.all()])
@@ -51,8 +52,7 @@ class AreaAdmin(admin.ModelAdmin):
 
     
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'category', 'background_color', 'text_color']
-    form = ProductForm
+    list_display = ['name', 'category']
 
     
 class ProductInline(admin.TabularInline):
