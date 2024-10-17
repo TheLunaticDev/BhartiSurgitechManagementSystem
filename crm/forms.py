@@ -1,8 +1,19 @@
 from django import forms
 from dal import autocomplete
 from .models import (
-    State, District, Area, Doctor,
+    State, District, Area, Doctor, Product
 )
+
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        fields = ['name', 'category', 'background_color', 'text_color']
+        model = Product
+        widgets = {
+            'background_color': forms.widgets.TextInput(attrs={'type': 'color'}),
+            'text_color': forms.widgets.TextInput(attrs={'type': 'color'}),
+        }
+
 
 class AreaModelForm(forms.ModelForm):
     state = forms.ModelChoiceField(queryset=State.objects.all(), label='State')

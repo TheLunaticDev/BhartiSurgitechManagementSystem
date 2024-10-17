@@ -11,7 +11,7 @@ from .models import (
     Category, Product, Doctor, Administrator,
     Reference, State, District,
 )
-from .forms import AreaModelForm, DoctorInlineForm
+from .forms import AreaModelForm, DoctorInlineForm, ProductForm
 from sysadmin.models import Manager
 
 
@@ -51,7 +51,8 @@ class AreaAdmin(admin.ModelAdmin):
 
     
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'category']
+    list_display = ['name', 'category', 'background_color', 'text_color']
+    form = ProductForm
 
     
 class ProductInline(admin.TabularInline):

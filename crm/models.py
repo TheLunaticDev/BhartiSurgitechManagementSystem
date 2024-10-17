@@ -69,6 +69,8 @@ class Category(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=150, unique=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    background_color = models.CharField(max_length=7, null=True)
+    text_color = models.CharField(max_length=7, null=True)
 
     def __str__(self):
         return self.name

@@ -135,6 +135,7 @@ def get_entry_context(request):
         'districts': District.objects.all(),
         'products': Product.objects.all(),
         'areas': Area.objects.all(),
+        'product_keys': product_keys,
     }
 
 @login_required
