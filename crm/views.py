@@ -30,18 +30,12 @@ def get_manager_entry_context(request, subordinate_id):
     subordinates = manager.subordinates.all()
 
     # Include manager's own entries and subordinate entries
-    print('Before Filter')
-    print(entries)
     if subordinate_id:
         # Filter entries belonging to a specific subordinate
         entries = Entry.objects.filter(owner=get_object_or_404(User, id=subordinate_id))
-        print('Subordinates Found')
-        print(entries)
     else:
         # Include both the manager's own entries and subordinate entries
         entries = Entry.objects.filter(Q(owner=request.user) | Q(owner__in=subordinates))
-        print('subordinates not Found')
-        print(entries)
 
     # Apply search query if provided
     if query:
