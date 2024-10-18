@@ -9,7 +9,7 @@ from django.http.response import HttpResponse
 from .models import (
     Entry, Area, Stage,
     Category, Product, Doctor, Administrator,
-    Reference, State, District,
+    Reference, State, District, ProductEntry,
 )
 from .forms import AreaModelForm, DoctorInlineForm, CategoryForm
 from sysadmin.models import Manager
@@ -55,12 +55,12 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'category']
 
     
-class ProductInline(admin.TabularInline):
-    model = Entry.products.through
-    verbose_name = 'Product'
-    verbose_name_plural = 'Select Products Here'
-    extra = 1
-    classes = ['collapse']
+#class ProductInline(admin.TabularInline):
+#    model = Entry.products.through
+#    verbose_name = 'Product'
+#    verbose_name_plural = 'Select Products Here'
+#    extra = 1
+#    classes = ['collapse']
 
     
 class AdministratorInline(admin.TabularInline):
@@ -85,6 +85,16 @@ class ReferenceInline(admin.TabularInline):
     verbose_name = 'Reference'
     verbose_name_plural = 'Add Reference here'
     classes = ['collapse']
+
+
+class ProductEntryAdmin(admin.ModelAdmin):
+    list_display = ['product', 'entry', 'count']
+
+class ProductEntryInline(admin.TabularInline):
+    model = ProductEntry
+    extra = 1
+    fields = ['product', 'count']
+    classes = ['collapse']
    
 
 class EntryAdmin(admin.ModelAdmin):
@@ -92,11 +102,9 @@ class EntryAdmin(admin.ModelAdmin):
 
     fieldsets = [
         ('Entry Information', {'fields': [('institute', 'area', 'stage'), ('expected', 'va', 'notes', 'schedule_date')], 'classes': ['collapse']}),
-        ('Products', {'fields': ['products'], 'classes': ['collapse']}),
     ]
-    filter_horizontal = ['products']
     readonly_fields = ['created_on', 'owner']
-    inlines = [AdministratorInline, DoctorInline, ReferenceInline]
+    inlines = [ProductEntryInline, AdministratorInline, DoctorInline, ReferenceInline]
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -145,3 +153,4 @@ admin.site.register(Administrator, AdministratorAdmin)
 admin.site.register(Reference, SourceAdmin)
 admin.site.register(District, DistrictAdmin)
 admin.site.register(State, StateAdmin)
+admin.site.register(ProductEntry, ProductEntryAdmin)

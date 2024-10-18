@@ -102,7 +102,7 @@ class Entry(models.Model):
     stage = models.ForeignKey(Stage, on_delete=models.CASCADE)
     expected = models.CharField(max_length=2, choices=EXPECTED_CHOICES)
     va = models.DecimalField(max_digits=3, decimal_places=1)
-    products = models.ManyToManyField(Product)
+    products = models.ManyToManyField(Product, through='ProductEntry')
     notes = models.CharField(max_length=2000, blank=True)
     created_on = models.DateTimeField(auto_now_add=True)
     schedule_date = models.DateTimeField(blank=True, null=True)
@@ -131,6 +131,16 @@ class Entry(models.Model):
     class Meta:
         verbose_name_plural = 'Entries'
         ordering = ['stage']
+
+
+class ProductEntry(models.Model):
+    entry = models.ForeignKey(Entry, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    count = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f'{self.product.name} - {self.count}'
+
 
 class Doctor(models.Model):
     name = models.CharField(max_length=255)
