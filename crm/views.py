@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory
 from django.urls import reverse
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from .models import (
     Area, Entry, Stage, District, Doctor, State, Product,
 )
@@ -84,6 +84,13 @@ def get_manager_entry_context(request, subordinate_id):
     
     if product:
         entries = entries.filter(products=product)
+    
+    entries = entries.prefetch_related(
+        Prefetch(
+            'products',
+            queryset=Product.objects.select_related('category').order_by('category__order', 'name')
+        )
+    )
 
     # Add products information to entries
     entries_with_products = []
@@ -154,6 +161,13 @@ def get_entry_context(request):
 
     if product:
         entries = entries.filter(products=product)
+    
+    entries = entries.prefetch_related(
+        Prefetch(
+            'products',
+            queryset=Product.objects.select_related('category').order_by('category__order', 'name')
+        )
+    )
 
     entries_with_products = []
 
