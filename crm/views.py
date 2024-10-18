@@ -5,7 +5,7 @@ from django.forms import modelformset_factory
 from django.urls import reverse
 from django.db.models import Q, Prefetch
 from .models import (
-    Area, Entry, Stage, District, Doctor, State, Product,
+    Area, Entry, Stage, District, Doctor, State, Product, ProductEntry,
 )
 from .decorators import group_required
 from sysadmin.models import Manager
@@ -94,10 +94,19 @@ def get_manager_entry_context(request, subordinate_id):
 
     # Add products information to entries
     entries_with_products = []
+
+    total_va = 0
+
     for entry in entries:
-        product_keys = [product.name for product in entry.products.all()]
-        entry.available_products = "  |  ".join(product_keys)
+        total_products = 0
+        for product in entry.products.all():
+            product_entry = ProductEntry.objects.get(product=product, entry=entry)
+            product.count = product_entry.count
+            total_products += product.count
+        entry.total_products = total_products
+        total_va += entry.va()
         entries_with_products.append(entry)
+ 
 
     return {
         'entries': entries_with_products,
@@ -107,6 +116,7 @@ def get_manager_entry_context(request, subordinate_id):
         'districts': District.objects.all(),
         'products': Product.objects.all(),
         'areas': Area.objects.all(),
+        'total_va': total_va,
         'subordinate_id': subordinate_id if subordinate_id is not None else '',
     }
 
@@ -171,14 +181,16 @@ def get_entry_context(request):
 
     entries_with_products = []
 
+    total_va = 0
+
     for entry in entries:
-        product_keys = []
-
+        total_products = 0
         for product in entry.products.all():
-            product_keys.append(product.name)
-
-        entry.available_products = "  |  ".join(product_keys)
-
+            product_entry = ProductEntry.objects.get(product=product, entry=entry)
+            product.count = product_entry.count
+            total_products += product.count
+        entry.total_products = total_products
+        total_va += entry.va()
         entries_with_products.append(entry)
     
     return {
@@ -187,6 +199,7 @@ def get_entry_context(request):
         'states': State.objects.all(),
         'districts': District.objects.all(),
         'products': Product.objects.all(),
+        'total_va': total_va,
         'areas': Area.objects.all(),
     }
 

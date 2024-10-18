@@ -52,17 +52,9 @@ class AreaAdmin(admin.ModelAdmin):
 
     
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'category']
-
+    list_display = ['name', 'category', 'va', 'cutoff']
     
-#class ProductInline(admin.TabularInline):
-#    model = Entry.products.through
-#    verbose_name = 'Product'
-#    verbose_name_plural = 'Select Products Here'
-#    extra = 1
-#    classes = ['collapse']
 
-    
 class AdministratorInline(admin.TabularInline):
     model = Administrator
     verbose_name = 'Administrator'
@@ -101,7 +93,7 @@ class EntryAdmin(admin.ModelAdmin):
     list_display = ['id', 'institute', 'time_since_creation', 'owner']
 
     fieldsets = [
-        ('Entry Information', {'fields': [('institute', 'area', 'stage'), ('expected', 'va', 'notes', 'schedule_date')], 'classes': ['collapse']}),
+        ('Entry Information', {'fields': [('institute', 'area', 'stage'), ('expected', 'notes', 'schedule_date')], 'classes': ['collapse']}),
     ]
     readonly_fields = ['created_on', 'owner']
     inlines = [ProductEntryInline, AdministratorInline, DoctorInline, ReferenceInline]

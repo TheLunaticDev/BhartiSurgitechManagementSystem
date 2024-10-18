@@ -74,6 +74,8 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=150, unique=True)
+    va = models.DecimalField(max_digits=3, decimal_places=1)
+    cutoff = models.BigIntegerField(verbose_name='Cutoff(Incl. GST)')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
 
     def __str__(self):
@@ -101,11 +103,14 @@ class Entry(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
     stage = models.ForeignKey(Stage, on_delete=models.CASCADE)
     expected = models.CharField(max_length=2, choices=EXPECTED_CHOICES)
-    va = models.DecimalField(max_digits=3, decimal_places=1)
     products = models.ManyToManyField(Product, through='ProductEntry')
     notes = models.CharField(max_length=2000, blank=True)
     created_on = models.DateTimeField(auto_now_add=True)
     schedule_date = models.DateTimeField(blank=True, null=True)
+
+    def va(self):
+        total_value = sum(product_entry.count * product_entry.product.va for product_entry in self.product_entries.all())
+        return total_value
 
     def time_since_creation(self):
         current_time = timezone.now()
@@ -134,12 +139,15 @@ class Entry(models.Model):
 
 
 class ProductEntry(models.Model):
-    entry = models.ForeignKey(Entry, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    entry = models.ForeignKey(Entry, on_delete=models.CASCADE, related_name='product_entries')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_entries')
     count = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return f'{self.product.name} - {self.count}'
+
+    class Meta:
+        verbose_name_plural = 'ProductEntries'
 
 
 class Doctor(models.Model):
