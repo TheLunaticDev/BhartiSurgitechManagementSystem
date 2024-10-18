@@ -7,10 +7,9 @@ from .models import (
 
 class CategoryForm(forms.ModelForm):
     class Meta:
-        fields = ['name', 'background_color', 'text_color']
+        fields = ['name', 'order', 'text_color']
         model = Category
         widgets = {
-            'background_color': forms.widgets.TextInput(attrs={'type': 'color'}),
             'text_color': forms.widgets.TextInput(attrs={'type': 'color'}),
         }
 

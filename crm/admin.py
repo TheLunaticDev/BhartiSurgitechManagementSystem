@@ -16,7 +16,7 @@ from sysadmin.models import Manager
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'products', 'background_color', 'text_color']
+    list_display = ['name', 'products', 'text_color', 'order']
     form = CategoryForm
 
     def products(self, obj):
@@ -24,7 +24,7 @@ class CategoryAdmin(admin.ModelAdmin):
     products.short_description = 'Products'
 
 class StageAdmin(admin.ModelAdmin):
-    list_display = ['name', 'description', 'win']
+    list_display = ['name', 'description', 'win', 'order']
 
 
 class AdministratorAdmin(admin.ModelAdmin):
@@ -123,7 +123,7 @@ class EntryAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj, post_url_continue=None):
         if request.user.groups.filter(name='Manager').exists():
-            referer_url = request.session['last_manager_edit_link']
+            referer_url = request.session.get('last_manager_edit_link', None)
             if referer_url:
                 return redirect(referer_url)
             else:

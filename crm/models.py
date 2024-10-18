@@ -58,13 +58,17 @@ class Stage(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=150, unique=True)
-    background_color = models.CharField(max_length=7, null=True)
-    text_color = models.CharField(max_length=7, null=True)
+    text_color = models.CharField(max_length=7, default="#ffffff")
+    order = models.IntegerField(
+        default=0,
+        help_text='Set the order for this product category.',
+    )
 
     def __str__(self):
         return self.name
     
     class Meta:
+        ordering = ['order']
         verbose_name_plural = 'Categories'
     
 
