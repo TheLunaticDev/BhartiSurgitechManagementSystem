@@ -13,6 +13,13 @@ from dal import autocomplete
 
 def get_manager_entry_context(request, subordinate_id):
     query = request.GET.get('q')
+    expected = request.GET.get('expected')
+    va = request.GET.get('va')
+    stage = request.GET.get('stage')
+    area = request.GET.get('area')
+    district = request.GET.get('district')
+    state = request.GET.get('state')
+    product = request.GET.get('product')
 
     try:
         manager = Manager.objects.get(user=request.user)
@@ -56,6 +63,27 @@ def get_manager_entry_context(request, subordinate_id):
             Q(references__phone_number__icontains=query) |
             Q(notes__icontains=query)
         )
+    
+    if expected:
+        entries = entries.filter(expected=expected)
+    
+    if va:
+        entries = entries.filter(va=va)
+    
+    if stage:
+        entries = entries.filter(stage=stage)
+    
+    if area:
+        entries = entries.filter(area=area)
+
+    if district:
+        entries = entries.filter(area__district=district)
+    
+    if state:
+        entries = entries.filter(area__district__state=state)
+    
+    if product:
+        entries = entries.filter(products=product)
 
     # Add products information to entries
     entries_with_products = []
@@ -69,6 +97,9 @@ def get_manager_entry_context(request, subordinate_id):
         'subordinates': subordinates,
         'stages': Stage.objects.all(),
         'states': State.objects.all(),
+        'districts': District.objects.all(),
+        'products': Product.objects.all(),
+        'areas': Area.objects.all(),
         'subordinate_id': subordinate_id if subordinate_id is not None else '',
     }
 
@@ -78,6 +109,8 @@ def get_entry_context(request):
     va = request.GET.get('va')
     stage = request.GET.get('stage')
     area = request.GET.get('area')
+    district = request.GET.get('district')
+    state = request.GET.get('state')
     product = request.GET.get('product')
 
     entries = Entry.objects.filter(owner=request.user)
@@ -112,6 +145,12 @@ def get_entry_context(request):
     
     if area:
         entries = entries.filter(area=area)
+
+    if district:
+        entries = entries.filter(area__district=district)
+    
+    if state:
+        entries = entries.filter(area__district__state=state)
 
     if product:
         entries = entries.filter(products=product)
