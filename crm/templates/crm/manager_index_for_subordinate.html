@@ -215,7 +215,7 @@
         {% for doctor in entry.doctors.all %}
         <div class="pb-2">
             {% if doctor.name %}
-            <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3"><span class="flex w-2.5 h-2.5 bg-purple-300 rounded-full me-1.5 flex-shrink-0"></span><span class="pr-2">{{ doctor.name }}</span>{% if doctor.designation %}<span class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">{{ doctor.designation }}</span>{% endif %}{% if doctor.speciality %}<span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{{ doctor.designation }}</span>{% endif %}</span>
+            <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3"><span class="flex w-2.5 h-2.5 bg-purple-300 rounded-full me-1.5 flex-shrink-0"></span><span class="pr-2">{{ doctor.name }}</span>{% if doctor.designation %}<span class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">{{ doctor.designation }}</span>{% endif %}{% if doctor.speciality %}<span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{{ doctor.speciality }}</span>{% endif %}</span>
             {% endif %}
             {% if doctor.email %}
             Email: {{ doctor.email }}<br />
