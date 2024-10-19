@@ -94,6 +94,9 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['category', 'name']
+
 
 class Entry(models.Model):
     EXPECTED_CHOICES = [
