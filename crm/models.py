@@ -73,10 +73,23 @@ class Category(models.Model):
     
 
 class Product(models.Model):
+    limiter = 100000
     name = models.CharField(max_length=150, unique=True)
-    va = models.DecimalField(max_digits=3, decimal_places=1)
-    cutoff = models.BigIntegerField(verbose_name='Cutoff(Incl. GST)')
+    cutoff = models.PositiveBigIntegerField(verbose_name='Cutoff (Incl. GST)')
+    purchase_price = models.PositiveBigIntegerField(verbose_name='Purchase Price')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    
+    def gross_va(self):
+        return round((self.cutoff - self.purchase_price) / self.limiter, 1)
+    
+    def net_va(self):
+        return round(self.gross_va() / 2, 1)
+
+    def insentive(self):
+        return round((self.cutoff - self.purchase_price) * (5 / 100))
+
+    def va(self):
+        return self.net_va()
 
     def __str__(self):
         return self.name
@@ -109,7 +122,7 @@ class Entry(models.Model):
     schedule_date = models.DateTimeField(blank=True, null=True)
 
     def va(self):
-        total_value = sum(product_entry.count * product_entry.product.va for product_entry in self.product_entries.all())
+        total_value = sum(product_entry.count * product_entry.product.va() for product_entry in self.product_entries.all())
         return total_value
 
     def time_since_creation(self):
