@@ -35,6 +35,17 @@ class Area(models.Model):
         ordering = ['district']
 
 
+class StageGroup(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    order = models.IntegerField()
+    text_color = models.CharField(max_length=7, default="#ffffff")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['order']
+
 class Stage(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.CharField(max_length=500)
@@ -44,6 +55,7 @@ class Stage(models.Model):
             MaxValueValidator(100),
         ]
     )
+    group = models.ForeignKey(StageGroup, related_name='stages', on_delete=models.SET_NULL, null=True, blank=True)
     order = models.IntegerField(
         default=0, 
         help_text='Set the order for this stage.'
@@ -85,7 +97,7 @@ class Product(models.Model):
     def net_va(self):
         return round(self.gross_va() / 2, 1)
 
-    def insentive(self):
+    def incentive(self):
         return round((self.cutoff - self.purchase_price) * (5 / 100))
 
     def va(self):

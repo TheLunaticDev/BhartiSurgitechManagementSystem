@@ -1,7 +1,7 @@
 from django import forms
 from dal import autocomplete
 from .models import (
-    State, District, Area, Doctor, Category,
+    State, District, Area, Doctor, Category, StageGroup,
 )
 
 
@@ -9,6 +9,15 @@ class CategoryForm(forms.ModelForm):
     class Meta:
         fields = ['name', 'order', 'text_color']
         model = Category
+        widgets = {
+            'text_color': forms.widgets.TextInput(attrs={'type': 'color'}),
+        }
+
+        
+class StageGroupForm(forms.ModelForm):
+    class Meta:
+        fields = ['name', 'order', 'text_color']
+        model = StageGroup
         widgets = {
             'text_color': forms.widgets.TextInput(attrs={'type': 'color'}),
         }

@@ -7,11 +7,11 @@ from django.forms import ModelForm
 from django.http import HttpRequest
 from django.http.response import HttpResponse
 from .models import (
-    Entry, Area, Stage,
+    Entry, Area, Stage, StageGroup,
     Category, Product, Doctor, Administrator,
     Reference, State, District, ProductEntry,
 )
-from .forms import AreaModelForm, DoctorInlineForm, CategoryForm
+from .forms import AreaModelForm, DoctorInlineForm, CategoryForm, StageGroupForm
 from sysadmin.models import Manager
 
 
@@ -23,8 +23,18 @@ class CategoryAdmin(admin.ModelAdmin):
         return ", ".join([product.name for product in obj.products.all()])
     products.short_description = 'Products'
 
+
+class StageGroupAdmin(admin.ModelAdmin):
+    list_display = ['name', 'stages', 'text_color', 'order']
+    form = StageGroupForm
+    
+    def stages(self, obj):
+        return ", ".join([stage.name for stage in obj.stages.all()])
+    stages.short_description = 'Stages'
+
+
 class StageAdmin(admin.ModelAdmin):
-    list_display = ['name', 'description', 'win', 'order']
+    list_display = ['name', 'description', 'win', 'order', 'group']
 
 
 class AdministratorAdmin(admin.ModelAdmin):
@@ -52,7 +62,7 @@ class AreaAdmin(admin.ModelAdmin):
 
     
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'category', 'cutoff', 'purchase_price', 'gross_va', 'net_va', 'insentive']
+    list_display = ['name', 'category', 'cutoff', 'purchase_price', 'gross_va', 'net_va', 'incentive']
     
 
 class AdministratorInline(admin.TabularInline):
@@ -138,6 +148,7 @@ class EntryAdmin(admin.ModelAdmin):
 admin.site.register(Entry, EntryAdmin)
 admin.site.register(Area, AreaAdmin)
 admin.site.register(Stage, StageAdmin)
+admin.site.register(StageGroup, StageGroupAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Doctor, DoctorAdmin)

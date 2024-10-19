@@ -5,7 +5,7 @@ from django.forms import modelformset_factory
 from django.urls import reverse
 from django.db.models import Q, Prefetch
 from .models import (
-    Area, Entry, Stage, District, Doctor, State, Product, ProductEntry,
+    Area, Entry, Stage, District, Doctor, State, Product, ProductEntry, StageGroup,
 )
 from .decorators import group_required
 from sysadmin.models import Manager
@@ -97,7 +97,19 @@ def get_manager_entry_context(request, subordinate_id):
 
     total_va = 0
 
+    stage_group_entries = {}
+
+    for group in StageGroup.objects.all():
+        stage_group_entries[group.name] = {}
+        stage_group_entries[group.name]['count'] = 0
+        stage_group_entries[group.name]['total_va'] = 0
+        stage_group_entries[group.name]['color'] = group.text_color
+
     for entry in entries:
+        if entry.stage.group:
+            stage_group_entries[entry.stage.group.name]['count'] += 1
+            stage_group_entries[entry.stage.group.name]['total_va'] += entry.va()
+
         total_products = 0
         for product in entry.products.all():
             product_entry = ProductEntry.objects.get(product=product, entry=entry)
@@ -112,6 +124,7 @@ def get_manager_entry_context(request, subordinate_id):
         'entries': entries_with_products,
         'subordinates': subordinates,
         'stages': Stage.objects.all(),
+        'stage_group_entries': stage_group_entries,
         'states': State.objects.all(),
         'districts': District.objects.all(),
         'products': Product.objects.all(),
@@ -183,7 +196,19 @@ def get_entry_context(request):
 
     total_va = 0
 
+    stage_group_entries = {}
+
+    for group in StageGroup.objects.all():
+        stage_group_entries[group.name] = {}
+        stage_group_entries[group.name]['count'] = 0
+        stage_group_entries[group.name]['color'] = group.text_color
+        stage_group_entries[group.name]['total_va'] = 0
+
     for entry in entries:
+        if entry.stage.group:
+            stage_group_entries[entry.stage.group.name]['count'] += 1
+            stage_group_entries[entry.stage.group.name]['total_va'] += entry.va()
+
         total_products = 0
         for product in entry.products.all():
             product_entry = ProductEntry.objects.get(product=product, entry=entry)
@@ -196,6 +221,7 @@ def get_entry_context(request):
     return {
         'entries': entries_with_products,
         'stages': Stage.objects.all(),
+        'stage_group_entries': stage_group_entries,
         'states': State.objects.all(),
         'districts': District.objects.all(),
         'products': Product.objects.all(),
