@@ -111,6 +111,7 @@ class Entry(models.Model):
         ('6', 'JUL'),
         ('7', 'AUG'),
         ('8', 'SEP'),
+        ('11', 'OCT'),
         ('9', 'NOV'),
         ('10', 'DEC'),
     ]
