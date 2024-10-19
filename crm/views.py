@@ -116,7 +116,7 @@ def get_manager_entry_context(request, subordinate_id):
         'districts': District.objects.all(),
         'products': Product.objects.all(),
         'areas': Area.objects.all(),
-        'total_va': total_va,
+        'total_va': round(total_va, 1),
         'subordinate_id': subordinate_id if subordinate_id is not None else '',
     }
 
@@ -199,7 +199,7 @@ def get_entry_context(request):
         'states': State.objects.all(),
         'districts': District.objects.all(),
         'products': Product.objects.all(),
-        'total_va': total_va,
+        'total_va': round(total_va, 1),
         'areas': Area.objects.all(),
     }
 
