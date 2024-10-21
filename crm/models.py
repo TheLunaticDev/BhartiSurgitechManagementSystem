@@ -89,6 +89,7 @@ class Product(models.Model):
     name = models.CharField(max_length=150, unique=True)
     cutoff = models.PositiveBigIntegerField(verbose_name='Cutoff (Incl. GST)')
     purchase_price = models.PositiveBigIntegerField(verbose_name='Purchase Price')
+    dealer_price = models.PositiveBigIntegerField(verbose_name='Dealer Price')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     
     def gross_va(self):
