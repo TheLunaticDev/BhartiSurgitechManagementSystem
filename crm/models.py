@@ -87,6 +87,7 @@ class Category(models.Model):
 class Product(models.Model):
     limiter = 100000
     name = models.CharField(max_length=150, unique=True)
+    quoted_price = models.PositiveBigIntegerField(verbose_name='Quoted Price')
     cutoff = models.PositiveBigIntegerField(verbose_name='Cutoff (Incl. GST)')
     purchase_price = models.PositiveBigIntegerField(verbose_name='Purchase Price')
     dealer_price = models.PositiveBigIntegerField(verbose_name='Sub Dealer Price')
