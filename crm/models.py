@@ -89,8 +89,13 @@ class Product(models.Model):
     name = models.CharField(max_length=150, unique=True)
     cutoff = models.PositiveBigIntegerField(verbose_name='Cutoff (Incl. GST)')
     purchase_price = models.PositiveBigIntegerField(verbose_name='Purchase Price')
-    dealer_price = models.PositiveBigIntegerField(verbose_name='Dealer Price')
+    dealer_price = models.PositiveBigIntegerField(verbose_name='Sub Dealer Price')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+
+    def va_percentage(self):
+        if self.purchase_price == 0:
+            return "UNDEFINED"
+        return str(round(((self.cutoff - self.purchase_price) / self.purchase_price) * 100)) + '%'
     
     def gross_va(self):
         return round((self.cutoff - self.purchase_price) / self.limiter, 1)
@@ -106,6 +111,8 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    va_percentage.short_description = "VA%"
 
     class Meta:
         ordering = ['category', 'name']
