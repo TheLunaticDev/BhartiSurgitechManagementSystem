@@ -63,6 +63,7 @@ class AreaAdmin(admin.ModelAdmin):
     
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'category','quoted_price', 'cutoff', 'purchase_price', 'dealer_price', 'va_percentage', 'gross_va', 'net_va', 'incentive']
+    list_filter = ['category']
 
 
 class AdministratorInline(admin.TabularInline):
