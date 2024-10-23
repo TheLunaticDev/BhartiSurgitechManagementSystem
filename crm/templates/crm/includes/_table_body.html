@@ -12,27 +12,38 @@
         {{ entry.area.district.state.code }}
       </span>
     </td>
+    {% if not hide_stage %}
     <td class="px-3 py-0">
       <span data-tooltip-target="tooltip-stage-{{ entry.id }}">
         {{ entry.stage.name }}
       </span>
     </td>
+    {% endif %}
+    {% if not hide_win %}
     <td class="px-3 py-0">
       {% if entry.stage.win != 0 %}
       {{ entry.stage.win }}%
       {% endif %}
     </td>
+    {% endif %}
+    {% if not hide_expected %}
     <td class="px-3 py-0">
       {{ entry.get_expected_display }}
     </td>
+    {% endif %}
+    {% if not hide_total_products %}
     <td class="px-3 py-0">
       {{ entry.total_products }}
     </td>
+    {% endif %}
+    {% if not hide_va %}
     <td class="px-3 py-0">
       {% if entry.va is not None %}
-      {{ entry.va }}
+      {{ entry.va|floatformat:1 }}
       {% endif %}
     </td>
+    {% endif %}
+    {% if not hide_products%}
     <td class="px-3 py-0">
       {% for product in entry.products.all %}
       <span data-popover-target="popover-{{ entry.id }}-{{ product.id }}" data-popover-placement="top" style="background-color: {{ product.category.background_color }}; color: {{ product.category.text_color }};">{{ product.name }}</span>
@@ -43,6 +54,7 @@
       {% if not forloop.last %} | {% endif %}
       {% endfor %}
     </td>
+    {% endif %}
   </tr>
 {% endfor %}
 

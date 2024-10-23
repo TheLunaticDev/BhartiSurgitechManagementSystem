@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'dal_select2',
     'base',
     'crm',
+    'cdb',
     'sysadmin',
     'compressor',
     'django.contrib.admin',

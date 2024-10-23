@@ -5,6 +5,27 @@ from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
+class Sector(models.Model):
+    name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
+
+        
+class Discipline(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+        
+class HospitalType(models.Model):
+    name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
+
+
 class State(models.Model):
     name = models.CharField(max_length=150, unique=True)
     code = models.CharField(max_length=2, unique=True)

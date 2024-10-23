@@ -13,6 +13,7 @@
         </a>
       </div>
     </th>
+    {% if not hide_stage %}
     <th scope="col" class="px-3 py-3">
       <div class="flex items-center">
         Stage
@@ -23,6 +24,8 @@
         </a>
       </div>
     </th>
+    {% endif %}
+    {% if not hide_win %}
     <th scope="col" class="px-3 py-3">
       <div class="flex items-center">
         Win
@@ -33,6 +36,8 @@
         </a>
       </div>
     </th>
+    {% endif %}
+    {% if not hide_expected %}
     <th scope="col" class="px-3 py-3">
       <div class="flex items-center">
         Expected
@@ -43,6 +48,8 @@
         </a>
       </div>
     </th>
+    {% endif %}
+    {% if not hide_total_products %}
     <th scope="col" class="px-3 py-3">
       <div class="flex items-center">
         Total
@@ -53,6 +60,8 @@
         </a>
       </div>
     </th>
+    {% endif %}
+    {% if not hide_va %}
     <th scope="col" class="px-3 py-3">
       <div class="flex items-center">
         VA
@@ -63,7 +72,10 @@
         </a>
       </div>
     </th>
+    {% endif %}
+    {% if not hide_products %}
     <th scope="col" class="px-3 py-3">
       Products
     </th>
+    {% endif %}
 </thead>

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+{% url 'admin:cdb_cdbentry_add' as add_url %}
+{% include 'crm/includes/_action_bar.html' with add_url=add_url show_add=True show_edit=True %}
+
+<div class="w-full mx-auto px-4 py-4">
+  <div class="overflow-x-auto shadow-md">
+    <table class="w-full uppercase font-medium border-spacing-0 border-collapse text-xs text-left rtl:text-right whitespace-nowrap text-gray-500 dark:text-gray-400">
+      {% include 'crm/includes/_table_head.html' with hide_stage=True hide_win=True hide_expected=True hide_total_products=True hide_va=True hide_products=True %}
+      {% include 'crm/includes/_table_body.html' with hide_stage=True hide_win=True hide_expected=True hide_total_products=True hide_va=True hide_products=True %}
+    </table>
+  </div>
+</div>
+{% endblock %}

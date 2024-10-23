@@ -10,6 +10,7 @@ from .models import (
     Entry, Area, Stage, StageGroup,
     Category, Product, Doctor, Administrator,
     Reference, State, District, ProductEntry,
+    Sector, Discipline, HospitalType,
 )
 from .forms import AreaModelForm, DoctorInlineForm, CategoryForm, StageGroupForm
 from sysadmin.models import Manager
@@ -158,3 +159,6 @@ admin.site.register(Reference, SourceAdmin)
 admin.site.register(District, DistrictAdmin)
 admin.site.register(State, StateAdmin)
 admin.site.register(ProductEntry, ProductEntryAdmin)
+admin.site.register(Sector)
+admin.site.register(Discipline)
+admin.site.register(HospitalType)

@@ -4,8 +4,9 @@
 {% block content %}
 
 {% url 'crm_index_view' as target_url %}
+{% url 'admin:crm_entry_add' as add_url %}
 {% url 'crm_edit_view' as edit_url %}
-{% include "crm/includes/_action_bar.html" with target_url=target_url edit_url=edit_url show_add=True show_edit=True %}
+{% include "crm/includes/_action_bar.html" with add_url=add_url target_url=target_url edit_url=edit_url show_add=True show_edit=True %}
 
 <div class="w-full mx-auto px-4 py-4">
     <div class="overflow-x-auto shadow-md">
