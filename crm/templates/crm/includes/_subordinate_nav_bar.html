@@ -1,0 +1,31 @@
+<nav class="bg-gray-50 dark:bg-gray-700">
+  <div class="max-w-screen-xl overflow-x-auto px-4 py-3 mx-auto">
+    <div class="flex items-center">
+      <ul class="flex flex-row font-medium mt-0 space-x-8 rtl:space-x-reverse text-sm">
+        {% for subordinate in subordinates %}
+          <li class="px-3">
+            {% if for_edit %}
+            <a href="{% url 'crm_manager_edit_view_with_id' subordinate.id %}" class="dark:text-white hover:underline">
+            {% else %}
+            <a href="{% url 'crm_manager_index_view_with_id' subordinate.id %}" class="dark:text-white hover:underline">
+            {% endif %}
+              {% if subordinate.first_name %}
+              {% if subordinate.id == subordinate_id %}
+              <span class="bg-green-500 rounded-lg p-2">{{ subordinate.first_name }}</span>
+              {% else %}
+              {{ subordinate.first_name }}
+              {% endif %}
+              {% else %}
+              {% if subordinate.id == subordinate_id %}
+              <span class="bg-green-500 rounded-lg p-2">{{ subordinate.username }}</span>
+              {% else %}
+              {{ subordinate.username }}
+              {% endif %}
+              {% endif %}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,12 @@
+<caption class="px-5 py-2 text-sm font-semibold text-center text-gray-900 bg-white dark:text-white dark:bg-gray-800">
+  <div class="flex justify-evenly">
+    {% for key, value in stage_group_entries.items %}
+    <div style="color: {{ value.color }}">
+        {{ key }}: {{ value.count }} - va - {{ value.total_va }}
+    </div>
+    {% endfor %}
+    <div class="text-white">
+        Total VA: <span class="font-bold">{{ total_va }}</span>
+    </div>
+  </div>
+</caption>

@@ -11,6 +11,10 @@ from .decorators import group_required
 from sysadmin.models import Manager
 from dal import autocomplete
 
+def popover_content(request, entry_id):
+    entry = get_object_or_404(Entry, id=entry_id)
+    return render(request, 'crm/includes/_popover_content.html', {'entry': entry})
+
 def get_manager_entry_context(request, subordinate_id):
     query = request.GET.get('q')
     expected = request.GET.get('expected')
@@ -95,7 +99,6 @@ def get_manager_entry_context(request, subordinate_id):
     # Add products information to entries
     entries_with_products = []
 
-    total_va = 0
 
     stage_group_entries = {}
 
@@ -116,9 +119,14 @@ def get_manager_entry_context(request, subordinate_id):
             product.count = product_entry.count
             total_products += product.count
         entry.total_products = total_products
-        total_va += entry.va()
         entries_with_products.append(entry)
  
+    total_va = 0
+    for entries in stage_group_entries:
+        stage_group_entries[entries]['total_va'] = round(stage_group_entries[entries]['total_va'], 1)
+        total_va += stage_group_entries[entries]['total_va']
+
+    total_va = round(total_va, 1)
 
     return {
         'entries': entries_with_products,
@@ -132,6 +140,16 @@ def get_manager_entry_context(request, subordinate_id):
         'total_va': round(total_va, 1),
         'subordinate_id': subordinate_id if subordinate_id is not None else '',
     }
+
+def get_subordinates(request):
+    try:
+        manager = Manager.objects.get(user=request.user)
+    except Manager.DoesNotExist:
+        manager = None
+    
+    if manager is not None:
+        return manager.subordinates.all()
+
 
 def get_entry_context(request):
     query = request.GET.get('q')
@@ -194,7 +212,6 @@ def get_entry_context(request):
 
     entries_with_products = []
 
-    total_va = 0
 
     stage_group_entries = {}
 
@@ -215,9 +232,15 @@ def get_entry_context(request):
             product.count = product_entry.count
             total_products += product.count
         entry.total_products = total_products
-        total_va += entry.va()
         entries_with_products.append(entry)
     
+    total_va = 0
+    for entries in stage_group_entries:
+        stage_group_entries[entries]['total_va'] = round(stage_group_entries[entries]['total_va'], 1)
+        total_va += stage_group_entries[entries]['total_va']
+    
+    total_va = round(total_va, 1)
+
     return {
         'entries': entries_with_products,
         'stages': Stage.objects.all(),
@@ -256,6 +279,14 @@ def manager_edit_view(request, subordinate_id=None):
     else:
         request.session['last_manager_edit_link'] = reverse('crm_manager_edit_view_with_id', kwargs={'subordinate_id': subordinate_id})
         return render(request, 'crm/manager_edit_for_subordinate.html', context)
+
+@login_required
+def manager_index_view_initial(request):
+    subordinates = get_subordinates(request)
+    context = {
+        'subordinates': subordinates
+    }
+    return render(request, 'crm/manager_index_initial.html', context)
 
 class DistrictAutoComplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):

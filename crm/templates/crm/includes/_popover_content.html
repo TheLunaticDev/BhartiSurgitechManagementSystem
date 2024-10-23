@@ -1,0 +1,92 @@
+<div>
+  <div class="pb-2 text-sm text-yellow-800 text-center rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300">
+    <span class="font-medium">{{ entry.institute }}</span>
+  </div>
+  <hr class="text-white mb-2" />
+  {% for admin in entry.admins.all %}
+  <div class="pb-2">
+    {% if admin.name %}
+    <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3">
+      <span class="bg-yellow-100 text-yellow-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Admin</span>
+      <span class="pr-2">{{ admin.name }}</span>
+      {% if admin.designation %}
+      <span class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-purple-300">{{ admin.designation }}</span>
+        {% endif %}
+      </span>
+      {% endif %}
+      {% if admin.email %}
+      Email: <span class="text-black dark:text-white">{{ admin.email }}</span><br />
+      {% endif %}
+      {% if admin.phone_number %}
+      Phone Number: <span class="text-black dark:text-white">{{ admin.phone_number }}</span><br />
+      {% endif %}
+    </span>
+  </div>
+  <hr class="pb-2" />
+    {% endfor %}
+
+    {% for doctor in entry.doctors.all %}
+    <div class="pb-2">
+        {% if doctor.name %}
+        <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3">
+            <span class="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Doctor</span>
+            <span class="pr-2">{{ doctor.name }}</span>
+            {% if doctor.designation %}
+            <span class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-purple-300">{{ doctor.designation }}</span>
+            {% endif %}
+            {% if doctor.speciality %}
+            <span class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-indigo-900 dark:text-indigo-300">{{ doctor.speciality }}</span>
+            {% endif %}
+        </span>
+        {% endif %}
+        {% if doctor.email %}
+        Email: <span class="text-black dark:text-white">{{ doctor.email }}</span><br />
+        {% endif %}
+        {% if doctor.phone_number %}
+        Phone Number: <span class="text-black dark:text-white">{{ doctor.phone_number }}</span><br />
+        {% endif %}
+    </div>
+    <hr class="pb-2" />
+    {% endfor %}
+
+    {% if entry.notes %}
+    <div class="pb-2">
+        <strong class="text-bold">Notes</strong><br />
+        {{ entry.notes }}
+    </div>
+    <hr class="pb-2" />
+    {% endif %}
+
+    {% for reference in entry.references.all %}
+    <div class="pb-2">
+        {% if reference.name %}
+        <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3">
+            <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">Reference</span>
+            <span class="pr-2">{{ reference.name }}</span>
+        </span>
+        {% endif %}
+        {% if reference.email %}
+        Email: <span class="text-block dark:text-white">{{ reference.email }}</span><br />
+        {% endif %}
+        {% if reference.phone_number %}
+        Phone Number: <span class="text-black dark:text-white">{{ reference.phone_number }}</span><br />
+        {% endif %}
+    </div>
+    <hr class="pb-2" />
+    {% endfor %}
+
+    <div class="flex">
+        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+        </svg>
+        <div class="px-2">
+            {{ entry.created_on|date }}
+            <span class="bg-gray-100 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded me-2 dark:bg-gray-700 dark:text-gray-400 border border-gray-500 ">
+<svg class="w-2.5 h-2.5 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+<path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
+</svg>
+{{ entry.time_since_creation }}
+</span>
+        </div>
+    </div>
+</div>
