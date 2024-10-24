@@ -11,9 +11,19 @@ from .decorators import group_required
 from sysadmin.models import Manager
 from dal import autocomplete
 
-def popover_content(request, entry_id):
+def crm_popover_content(request, entry_id):
     entry = get_object_or_404(Entry, id=entry_id)
-    return render(request, 'crm/includes/_popover_content.html', {'entry': entry})
+    product_entry = []
+    for product in entry.products.all():
+        product_new_entry = ProductEntry.objects.get(product=product, entry=entry)
+        product_entry.append({
+            'name': product.name,
+            'count': product_new_entry.count,
+            'qp': product.quoted_price,
+            'cutoff': product.cutoff,
+        })
+        
+    return render(request, 'crm/includes/_popover_content.html', {'entry': entry, 'product_entry': product_entry})
 
 def get_manager_entry_context(request, subordinate_id):
     query = request.GET.get('q')

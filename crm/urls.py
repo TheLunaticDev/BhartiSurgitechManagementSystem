@@ -11,5 +11,5 @@ urlpatterns = [
     path('manager/edit/<int:subordinate_id>/', views.manager_edit_view, name="crm_manager_edit_view_with_id"),
     path('district-autocomplete/', views.DistrictAutoComplete.as_view(), name="district-autocomplete"),
     path('doctor-autocomplete/', views.DoctorAutoComplete.as_view(), name='doctor-autocomplete'),
-    path('popover-content/<int:entry_id>', views.popover_content, name='popover_content')
+    path('popover-content/<int:entry_id>', views.crm_popover_content, name='crm_popover_content'),
 ]

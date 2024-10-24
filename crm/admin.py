@@ -105,7 +105,7 @@ class EntryAdmin(admin.ModelAdmin):
     list_display = ['id', 'institute', 'time_since_creation', 'owner']
 
     fieldsets = [
-        ('Entry Information', {'fields': [('institute', 'area', 'stage'), ('expected', 'notes', 'schedule_date')], 'classes': ['collapse']}),
+        ('Entry Information', {'fields': [('institute', 'area', 'stage'), ('expected', 'notes', 'schedule_date'), ('landmark', 'hospital_type', 'sector', 'discipline')], 'classes': ['collapse']}),
     ]
     readonly_fields = ['created_on', 'owner']
     inlines = [ProductEntryInline, AdministratorInline, DoctorInline, ReferenceInline]

@@ -1,6 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from .models import CDBEntry
+
+def cdb_popover_content(request, entry_id):
+    entry = get_object_or_404(CDBEntry, id=entry_id)
+    return render(request, 'crm/includes/_popover_content.html', {'entry': entry, 'hide_popover_products': True})
 
 def get_cdb_entry_context(request):
     query = request.GET.get('q')

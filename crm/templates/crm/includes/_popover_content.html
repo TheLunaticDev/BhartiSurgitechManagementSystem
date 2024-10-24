@@ -49,6 +49,43 @@
     <hr class="pb-2" />
     {% endfor %}
 
+    {% if not hide_popover_products %}
+    <div class="pb-2">
+      <div class="relative overflow-x-auto">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" class="">Product</th>
+              <th scope="col" class="">Count</th>
+              <th scope="col" class="">QP</th>
+              <th scope="col" class="">Cutoff</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for product in product_entry %}
+            <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+              <td>{{ product.name }}</td>
+              <td>{{ product.count }}</td>
+              <td>{{ product.quoted_price }}</td>
+              <td>{{ product.cutoff }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <hr class="pb-2" />
+    {% endif %}
+
+    <div class="pb-2">
+      <h3 class="text-md text-bold text-center text-cyan-500 pb-2">Other Information</h3>
+      Discipline: <span class="text-black dark:text-white">{{ entry.discipline }}</span><br />
+      Hospital Type: <span class="text-black dark:text-white">{{ entry.hospital_type }}</span><br />
+      Sector: <span class="text-black dark:text-white">{{ entry.sector }}</span><br />
+      Landmark: <span class="text-black dark:text-white">{{ entry.landmark }}</span><br />
+    </div>
+    <hr class="pb-2" />
+
     {% if entry.notes %}
     <div class="pb-2">
         <strong class="text-bold">Notes</strong><br />
