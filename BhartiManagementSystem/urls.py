@@ -7,5 +7,6 @@ urlpatterns = [
     path('accounts/', include("django.contrib.auth.urls")),
     path('', include('crm.urls')),
     path('cdb/', include('cdb.urls')),
+    path('tp/', include('tp.urls')),
     path('sys/admin/', include('sysadmin.urls')),
 ] + debug_toolbar_urls()

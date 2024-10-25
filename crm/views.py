@@ -11,6 +11,10 @@ from .decorators import group_required
 from sysadmin.models import Manager
 from dal import autocomplete
 
+def crm_select_view(request):
+    context = get_entry_context(request)
+    return render(request, 'crm/crm_select_view.html', context)
+
 def crm_popover_content(request, entry_id):
     entry = get_object_or_404(Entry, id=entry_id)
     product_entry = []

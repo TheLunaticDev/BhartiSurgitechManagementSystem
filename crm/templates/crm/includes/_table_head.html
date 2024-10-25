@@ -1,5 +1,9 @@
 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
   <tr>
+    {% if use_form %}
+    <th scope="col" class="px-3 py-3">
+    </th>
+    {% endif %}
     <th scope="col" class="px-3 py-3">
       Institute
     </th>
@@ -76,6 +80,19 @@
     {% if not hide_products %}
     <th scope="col" class="px-3 py-3">
       Products
+    </th>
+    {% endif %}
+    {% if show_schedule %}
+    <th scope="col" class="px-3 py-3">
+      Date
+    </th>
+    <th scope="col" class="px-3 py-3">
+      Time
+    </th>
+    {% endif %}
+    {% if show_purpose %}
+    <th scope="col" class="px-3 py-3">
+      Purpose
     </th>
     {% endif %}
 </thead>

@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'base',
     'crm',
     'cdb',
+    'tp',
     'sysadmin',
     'compressor',
     'django.contrib.admin',
