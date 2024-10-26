@@ -1,13 +1,31 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import TPEntry
 from crm.models import Entry
 from cdb.models import CDBEntry
 
+def edit_field(request, entry_id, field_name):
+    entry = get_object_or_404(TPEntry, id=entry_id)
+    context = {
+        'entry': entry,
+        'field_name': field_name,
+        'field_value': getattr(entry, field_name),
+    }
+    return render(request, 'tp/includes/edit_field.html', context)
+
+def update_field(request, entry_id, field_name):
+    if request.method == 'POST':
+        entry = get_object_or_404(TPEntry, id=entry_id)
+        new_value = request.POST.get('value')
+        setattr(entry, field_name, new_value)
+        entry.save()
+        
+        return JsonResponse({'new_value': new_value})
+
 def tp_popover_content(request, entry_id):
     entry = get_object_or_404(TPEntry, id=entry_id)
     return render(request, 'crm/includes/_popover_content.html', {'entry': entry})
-
 
 @login_required
 def index_view(request):

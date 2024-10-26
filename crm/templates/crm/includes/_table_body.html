@@ -65,15 +65,15 @@
     </td>
     {% endif %}
     {% if show_schedule %}
-    <td scope="col" class="px-3 py-3">
-      {{ entry.schedule|date:"d-m-Y" }}
+    <td hx-get="{% url 'edit_field' entry.id 'schedule' %}" hx-trigger="click" hx-target="#field-schedule-{{ entry.id }}" id="field-schedule-{{ entry.id }}" scope="col" class="px-3 py-0">
+      <span>{{ entry.schedule|date:"d-m-Y" }}</span>
     </td>
-    <td scope="col" class="px-3 py-3">
+    <td scope="col" class="px-3 py-0">
       {{ entry.schedule|date:"g:i A"}}
     </td>
     {% endif %}
     {% if show_purpose %}
-    <td scope="col" class="px-3 py-3">
+    <td scope="col" class="px-3 py-0">
       {{ entry.purpose }}
     </td>
     {% endif %}
