@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models import CDBEntry
 
@@ -44,6 +45,17 @@ def get_cdb_entry_context(request):
         'entries': entries,
     }
 
+@login_required
 def index_view(request):
     context = get_cdb_entry_context(request)
     return render(request, 'cdb/index_view.html', context)
+
+@login_required
+def edit_view(request):
+    context = get_cdb_entry_context(request)
+    return render(request, 'cdb/edit_view.html', context)
+
+@login_required
+def select_view(request):
+    context = get_cdb_entry_context(request)
+    return render(request, 'cdb/cdb_select_view.html', context)

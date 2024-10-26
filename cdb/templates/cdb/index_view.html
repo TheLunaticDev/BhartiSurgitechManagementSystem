@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 {% url 'admin:cdb_cdbentry_add' as add_url %}
-{% include 'crm/includes/_action_bar.html' with add_url=add_url show_add=True show_edit=True %}
+{% url 'cdb_edit_view' as edit_url %}
+{% url 'cdb_select_view' as select_url %}
+{% include 'crm/includes/_action_bar.html' with add_url=add_url show_add=True show_edit=True edit_url=edit_url show_select=True select_url=select_url %}
 
 <div class="w-full mx-auto px-4 py-4">
   <div class="overflow-x-auto shadow-md">
