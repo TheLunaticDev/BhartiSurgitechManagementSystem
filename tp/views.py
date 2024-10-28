@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.db.models import F
 from .models import TPEntry
 from crm.models import Entry
 from cdb.models import CDBEntry
@@ -29,7 +30,7 @@ def tp_popover_content(request, entry_id):
 
 @login_required
 def index_view(request):
-    entries = TPEntry.objects.all().filter(owner=request.user)
+    entries = TPEntry.objects.all().filter(owner=request.user).order_by(F('schedule').asc(nulls_last=True), F('stage__order').asc(nulls_last=True))
     context = {
         'entries': entries,
     }
@@ -37,7 +38,7 @@ def index_view(request):
 
 @login_required
 def edit_view(request):
-    entries = TPEntry.objects.all().filter(owner=request.user)
+    entries = TPEntry.objects.all().filter(owner=request.user).order_by(F('schedule').asc(nulls_last=True), F('stage__order').asc(nulls_last=True))
     context = {
         'entries': entries,
     }
