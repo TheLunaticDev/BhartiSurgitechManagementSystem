@@ -77,6 +77,15 @@
       {{ entry.purpose }}
     </td>
     {% endif %}
+    {% if show_owner %}
+    <td scope="col" class="px-3 py-0">
+      {% if entry.owner.first_name %}
+      {{ entry.owner.first_name }}
+      {% else %}
+      {{ entry.owner.username }}
+      {% endif %}
+    </td>
+    {% endif %}
   </tr>
 {% endfor %}
 

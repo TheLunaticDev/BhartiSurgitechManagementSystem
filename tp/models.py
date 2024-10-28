@@ -28,7 +28,7 @@ class TPEntry(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tp_entries')
     institute = models.CharField(max_length=200)
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
-    landmark = models.CharField(max_length=300)
+    landmark = models.CharField(max_length=300, blank=True)
     sector = models.ForeignKey(Sector, on_delete=models.CASCADE)
     discipline = models.ForeignKey(Discipline, on_delete=models.CASCADE)
     hospital_type = models.ForeignKey(HospitalType, on_delete=models.CASCADE)
@@ -36,6 +36,15 @@ class TPEntry(models.Model):
     products = models.ManyToManyField(Product, blank=True)
     schedule = models.DateTimeField(blank=True, null=True)
     purpose = models.ForeignKey(Purpose, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return self.institute
+
+    def location(self):
+        return f"{self.area} | {self.area.district.name} | {self.area.district.state.name}"
+
+    def product_list(self):
+        return " | ".join([str(product) for product in self.products.all()])
 
     class Meta:
         verbose_name_plural = 'TP Entries'

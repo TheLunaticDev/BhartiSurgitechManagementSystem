@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 from crm.models import( 
     Area, Sector, Discipline, HospitalType,
@@ -6,15 +7,19 @@ from crm.models import(
 
 
 class CDBEntry(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     institute = models.CharField(max_length=200)
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
-    landmark = models.CharField(max_length=300)
+    landmark = models.CharField(max_length=300, blank=True)
     sector = models.ForeignKey(Sector, on_delete=models.CASCADE)
     discipline = models.ForeignKey(Discipline, on_delete=models.CASCADE)
     hospital_type = models.ForeignKey(HospitalType, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.institute
+
+    def location(self):
+        return f"{self.area} | {self.area.district.name} | {self.area.district.state.name}"
 
     class Meta:
         verbose_name_plural = 'CDB Entries'

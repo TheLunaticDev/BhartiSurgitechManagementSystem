@@ -49,6 +49,24 @@
     <hr class="pb-2" />
     {% endfor %}
 
+    {% for reference in entry.references.all %}
+    <div class="pb-2">
+        {% if reference.name %}
+        <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3">
+            <span class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">Reference</span>
+            <span class="pr-2">{{ reference.name }}</span>
+        </span>
+        {% endif %}
+        {% if reference.email %}
+        Email: <span class="text-block dark:text-white">{{ reference.email }}</span><br />
+        {% endif %}
+        {% if reference.phone_number %}
+        Phone Number: <span class="text-black dark:text-white">{{ reference.phone_number }}</span><br />
+        {% endif %}
+    </div>
+    <hr class="pb-2" />
+    {% endfor %}
+
     {% if not hide_popover_products %}
     <div class="pb-2">
       <div class="relative overflow-x-auto">
@@ -93,24 +111,6 @@
     </div>
     <hr class="pb-2" />
     {% endif %}
-
-    {% for reference in entry.references.all %}
-    <div class="pb-2">
-        {% if reference.name %}
-        <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3">
-            <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">Reference</span>
-            <span class="pr-2">{{ reference.name }}</span>
-        </span>
-        {% endif %}
-        {% if reference.email %}
-        Email: <span class="text-block dark:text-white">{{ reference.email }}</span><br />
-        {% endif %}
-        {% if reference.phone_number %}
-        Phone Number: <span class="text-black dark:text-white">{{ reference.phone_number }}</span><br />
-        {% endif %}
-    </div>
-    <hr class="pb-2" />
-    {% endfor %}
 
     <div class="flex">
         <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
