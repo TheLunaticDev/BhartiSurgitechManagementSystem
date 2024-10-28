@@ -2,7 +2,7 @@
 {% load add_attr %}
 {% block title %}CRM Edit{% endblock %}
 {% block content %}
-{% url 'crm/includes/_subordinate_nav_bar.html' with for_edit=True %}
+{% include 'crm/includes/_subordinate_nav_bar.html' with for_edit=True %}
 {% url 'crm_manager_edit_view' as target_url %}
 {% url 'crm_manager_index_view' as return_url %}
 {% include "crm/includes/_action_bar.html" with target_url=target_url return_url=return_url show_return=True %}
