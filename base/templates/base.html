@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="{% static 'styles.css' %}" />
     {% endcompress %}
     <link rel="icon" href="" type="image/x-icon" />
+    <script src="{% static 'htmx.min.js' %}"></script>
   </head>
   <body class="dark:bg-black">
     {% include '_nav_base.html' %}
@@ -95,6 +96,5 @@
         });
     </script>
     {% endcompress %}
-    <script src="https://unpkg.com/htmx.org@2.0.3"></script>
   </body>
 </html>

@@ -32,7 +32,7 @@ class CDBReferenceInline(admin.TabularInline):
 class CDBEntryAdmin(admin.ModelAdmin):
     list_display = ['institute', 'location', 'owner__first_name']
     fieldsets = [
-        ('Entry Information', {'fields': [('institute', 'area', 'landmark'), ('sector', 'discipline', 'hospital_type')], 'classes': ['collapse']}),
+        ('Entry Information', {'fields': [('owner', 'institute'), ('area', 'landmark'), ('sector', 'discipline', 'hospital_type')], 'classes': ['collapse']}),
     ]
     inlines = [CDBAdministratorInline, CDBDoctorInline, CDBReferenceInline]
 
