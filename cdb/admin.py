@@ -35,6 +35,7 @@ class CDBEntryAdmin(admin.ModelAdmin):
         ('Entry Information', {'fields': [('owner', 'institute'), ('area', 'landmark'), ('sector', 'discipline', 'hospital_type')], 'classes': ['collapse']}),
     ]
     inlines = [CDBAdministratorInline, CDBDoctorInline, CDBReferenceInline]
+    list_filter = ['area', 'sector', 'discipline', 'hospital_type', 'area__district__name', 'area__district__state__name', 'owner']
 
 
 admin.site.register(CDBEntry, CDBEntryAdmin)
