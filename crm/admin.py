@@ -127,11 +127,8 @@ class EntryAdmin(admin.ModelAdmin):
             obj.owner = request.user
         super().save_model(request, obj, form, change)
     
-    def response_add(self, request):
-        if request.user.groups.filter(name='Employee').exists():
-            return redirect('/')
-        else:
-            return HttpResponse('You are not an employee, you cannot add an entry')
+    def response_add(self, request, obj):
+        return redirect('/')
 
 admin.site.register(Entry, EntryAdmin)
 admin.site.register(Area, AreaAdmin)
