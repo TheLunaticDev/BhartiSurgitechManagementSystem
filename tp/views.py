@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from django.db.models import F
 from .models import TPEntry
 from crm.models import Entry
@@ -26,7 +27,8 @@ def update_field(request, entry_id, field_name):
 
 def tp_popover_content(request, entry_id):
     entry = get_object_or_404(TPEntry, id=entry_id)
-    return render(request, 'crm/includes/_popover_content.html', {'entry': entry})
+    popover_edit_link = reverse('admin:tp_tpentry_change', args=(entry_id,))
+    return render(request, 'crm/includes/_popover_content.html', {'entry': entry, 'popover_edit_link': popover_edit_link})
 
 @login_required
 def index_view(request):

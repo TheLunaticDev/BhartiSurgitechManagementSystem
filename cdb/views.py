@@ -1,11 +1,19 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from django.db.models import Q
 from .models import CDBEntry
 
 def cdb_popover_content(request, entry_id):
     entry = get_object_or_404(CDBEntry, id=entry_id)
-    return render(request, 'crm/includes/_popover_content.html', {'entry': entry, 'hide_popover_products': True})
+    popover_edit_link = reverse('admin:cdb_cdbentry_change', args=(entry_id,))
+
+    context = {
+        'entry': entry,
+        'hide_popover_products': True,
+        'popover_edit_link': popover_edit_link,
+    }
+    return render(request, 'crm/includes/_popover_content.html', context)
 
 def get_cdb_entry_context(request):
     query = request.GET.get('q')

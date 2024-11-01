@@ -26,8 +26,16 @@ def crm_popover_content(request, entry_id):
             'qp': product.quoted_price,
             'cutoff': product.cutoff,
         })
+    
+    popover_edit_link = reverse('admin:crm_entry_change', args=(entry_id,))
+    
+    context = {
+        'entry': entry,
+        'product_entry': product_entry,
+        'popover_edit_link': popover_edit_link,
+    }
         
-    return render(request, 'crm/includes/_popover_content.html', {'entry': entry, 'product_entry': product_entry})
+    return render(request, 'crm/includes/_popover_content.html', context)
 
 def get_manager_entry_context(request, subordinate_id):
     query = request.GET.get('q')
