@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'cdb',
     'tp',
     'sysadmin',
+    'productlist',
     'compressor',
     'django.contrib.admin',
     'django.contrib.auth',

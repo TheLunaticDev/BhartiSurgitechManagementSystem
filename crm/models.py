@@ -103,7 +103,7 @@ class Category(models.Model):
     class Meta:
         ordering = ['order']
         verbose_name_plural = 'Categories'
-    
+
 
 class Product(models.Model):
     limiter = 100000
@@ -139,6 +139,12 @@ class Product(models.Model):
     class Meta:
         ordering = ['category', 'name']
 
+
+class Configuration(models.Model):
+    name = models.CharField(max_length=150)
+    quantity = models.IntegerField()
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='configurations')
+    
 
 class Entry(models.Model):
     EXPECTED_CHOICES = [

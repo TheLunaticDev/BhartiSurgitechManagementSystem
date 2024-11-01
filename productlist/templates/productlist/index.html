@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load compress %}
+{% block content %}
+<div class="w-11/12 mx-auto flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between py-4">
+  <div>
+    <button id="dropdownRadioButton" data-dropdown-toggle="dropdownRadio" class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
+      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M5.05 3C3.291 3 2.352 5.024 3.51 6.317l5.422 6.059v4.874c0 .472.227.917.613 1.2l3.069 2.25c1.01.742 2.454.036 2.454-1.2v-7.124l5.422-6.059C21.647 5.024 20.708 3 18.95 3H5.05Z"/>
+      </svg>
+      Category
+      <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+      </svg>
+    </button>
+    <div id="dropdownRadio" class="z-10 hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate3d(522.5px, 3847.5px, 0px);">
+      <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioButton">
+        {% for category in categories %}
+          <li>
+            <div hx-get="{% url 'product_list_filter_by_category' category.id %}" hx-trigger="click" hx-target="#table-body" hx-swap="innerHTML" class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+              <input id="{{ category.id }}" type="radio" value="{{ category.id }}" name="category" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+              <label for="{{ category.id }}" class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{{ category }}</label>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <label for="table-search" class="sr-only">Search</label>
+  <div class="relative flex">
+    <input id="search" name="query" type="text" class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items">
+    <button hx-get="{% url 'product_list_search' %}" hx-include="#search" hx-trigger="click" hx-target="#table-body" hx-swap="innerHTML" type="button" class="mx-2 px-3 py-2.5 text-sm font-medium text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
+        </svg>
+    </button>
+  </div>
+</div>
+
+<div class="w-11/12 mx-auto pt-4 relative overflow-x-auto">
+    <table class="w-full mx-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Product Name
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Category
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Quoted Price
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Cutoff Price (INCL. GST)
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Sub Dealer Price
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    VA
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Incentive
+                </th>
+            </tr>
+        </thead>
+        <tbody id="table-body" class="uppercase">
+            {% for product in products %}
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th hx-get="{% url 'get_product_configurations' product.id %}" hx-trigger="click" hx-target="#popover-content" hx-swap="innerHTML" scope="row" class="popover-trigger px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    {{ product.name }}
+                </th>
+                <td class="px-6">
+                    {{ product.category }}
+                </td>
+                <td class="px-6">
+                    {{ product.quoted_price }}
+                </td>
+                <td class="px-6">
+                    {{ product.cutoff }}
+                </td>
+                <td class="px-6">
+                    {{ product.dealer_price }}
+                </td>
+                <td class="px-6">
+                    {{ product.net_va }}
+                </td>
+                <td class="px-6">
+                    {{ product.incentive }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div data-popover id="popover-default" role="tooltip" class="absolute z-10 invisible inline-block w-96 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:border-gray-600 dark:bg-gray-800">
+  <div id="popover-content" class="p-2">
+  </div>
+</div>
+
+{% compress js %}
+<script>
+  document.addEventListener('click', function (event) {
+    const popoverContent = document.getElementById('popover-default');
+    const triggerElements = document.getElementsByClassName('popover-trigger');
+    
+    let clickedInsideTrigger = false;
+
+    // Loop through all popover-trigger elements and check if the clicked target is one of them
+    for (let i = 0; i < triggerElements.length; i++) {
+      if (triggerElements[i].contains(event.target)) {
+        clickedInsideTrigger = true;
+        
+        const rect = triggerElements[i].getBoundingClientRect();
+
+        // Set the popover's position dynamically beside the clicked <th>
+        popoverContent.style.left = `${rect.right + window.scrollX + 10}px`; // 10px to the right of the <th>
+        popoverContent.style.top = `${rect.top + window.scrollY}px`; // Align with the top of the <th>
+        
+        // Make the popover visible
+        popoverContent.classList.remove('invisible', 'opacity-0');
+        popoverContent.classList.add('opacity-100');
+        break;
+      }
+    }
+
+    // If the click happened outside the popover and not on a trigger element, hide the popover
+    if (!clickedInsideTrigger && !popoverContent.contains(event.target)) {
+      popoverContent.classList.add('invisible', 'opacity-0');
+      popoverContent.classList.remove('opacity-100');
+    }
+  });
+</script>
+{% endcompress %}
+
+{% endblock %}

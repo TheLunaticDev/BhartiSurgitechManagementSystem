@@ -10,7 +10,7 @@ from .models import (
     Entry, Area, Stage, StageGroup,
     Category, Product, Doctor, Administrator,
     Reference, State, District, ProductEntry,
-    Sector, Discipline, HospitalType,
+    Sector, Discipline, HospitalType, Configuration,
 )
 from .forms import AreaModelForm, DoctorInlineForm, CategoryForm, StageGroupForm
 from sysadmin.models import Manager
@@ -61,10 +61,19 @@ class DistrictAdmin(admin.ModelAdmin):
 class AreaAdmin(admin.ModelAdmin):
     form = AreaModelForm
 
+
+class ConfigurationInline(admin.TabularInline):
+    model = Configuration
+    verbose_name = 'Configurations'
+    verbose_name_plural = 'Add Configurations here'
+    extra = 1
+    classes = ['collapse']
+
     
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'category','quoted_price', 'cutoff', 'purchase_price', 'dealer_price', 'va_percentage', 'gross_va', 'net_va', 'incentive']
     list_filter = ['category']
+    inlines = [ConfigurationInline]
 
 
 class AdministratorInline(admin.TabularInline):

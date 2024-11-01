@@ -9,4 +9,5 @@ urlpatterns = [
     path('cdb/', include('cdb.urls')),
     path('tp/', include('tp.urls')),
     path('sys/admin/', include('sysadmin.urls')),
+    path('products/', include('productlist.urls')),
 ] + debug_toolbar_urls()
