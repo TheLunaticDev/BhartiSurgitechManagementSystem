@@ -127,25 +127,11 @@ class EntryAdmin(admin.ModelAdmin):
             obj.owner = request.user
         super().save_model(request, obj, form, change)
     
-    def response_add(self, request, obj, post_url_continue=None):
+    def response_add(self, request):
         if request.user.groups.filter(name='Employee').exists():
             return redirect('/')
         else:
             return HttpResponse('You are not an employee, you cannot add an entry')
-
-    def response_change(self, request, obj, post_url_continue=None):
-        if request.user.groups.filter(name='Manager').exists():
-            referer_url = request.session.get('last_manager_edit_link', None)
-            if referer_url:
-                return redirect(referer_url)
-            else:
-                return redirect('crm_manager_edit_view')
-        elif request.user.groups.filter(name='Employee').exists():
-            return redirect('/edit/')
-
-        else:
-            return redirect('/')
-
 
 admin.site.register(Entry, EntryAdmin)
 admin.site.register(Area, AreaAdmin)
