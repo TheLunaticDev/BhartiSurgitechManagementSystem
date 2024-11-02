@@ -1,6 +1,6 @@
 {% for product in products %}
   <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-    <th scope="row" class="px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+    <th hx-get="{% url 'get_product_configurations' product.id %}" hx-trigger="click" hx-target="#popover-content" hx-swap="innerHTML" scope="row" class="popover-trigger px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
       {{ product.name }}
     </th>
     <td class="px-6">
