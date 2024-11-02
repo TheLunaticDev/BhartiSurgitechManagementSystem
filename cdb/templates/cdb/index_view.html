@@ -1,15 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 {% url 'admin:cdb_cdbentry_add' as add_url %}
-{% url 'cdb_edit_view' as edit_url %}
 {% url 'cdb_select_view' as select_url %}
-{% include 'crm/includes/_action_bar.html' with add_url=add_url show_add=True show_edit=True edit_url=edit_url show_select=True select_url=select_url %}
+{% include 'cdb/partials/_action_bar.html' %}
 
 <div class="w-full mx-auto px-4 py-4">
   <div class="overflow-x-auto shadow-md">
     <table class="w-full uppercase font-medium border-spacing-0 border-collapse text-xs text-left rtl:text-right whitespace-nowrap text-gray-500 dark:text-gray-400">
-      {% include 'crm/includes/_table_head.html' with hide_stage=True hide_win=True hide_expected=True hide_total_products=True hide_va=True hide_products=True show_owner=True %}
-      {% include 'crm/includes/_table_body.html' with hide_stage=True hide_win=True hide_expected=True hide_total_products=True hide_va=True hide_products=True hide_popover_products=True popover_for_cdb=True show_owner=True %}
+      {% include 'cdb/partials/_table_head.html' %}
+      {% include 'cdb/partials/_table_body.html' with page_obj=page_obj %}
     </table>
   </div>
 </div>
