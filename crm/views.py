@@ -5,12 +5,81 @@ from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory
 from django.urls import reverse
 from django.db.models import Q, Prefetch
+from django.db.models.functions import Upper
 from .models import (
     Area, Entry, Stage, District, Doctor, State, Product, ProductEntry, StageGroup,
+)
+from cdb.models import (
+    HospitalType, Sector, Discipline,
 )
 from .decorators import group_required
 from sysadmin.models import Manager
 from dal import autocomplete
+
+@login_required
+def add_new_entry_as_manager(request):
+    if request.method == 'POST':
+        add_owner = request.POST.get('add_subordinate_id')
+        add_institute = request.POST.get('add_institute')
+        add_landmark = request.POST.get('add_landmark')
+        add_stage = request.POST.get('add_stage')
+        add_hospital_type = request.POST.get('add_hospital_type')
+        add_sector = request.POST.get('add_sector')
+        add_discipline = request.POST.get('add_discipline')
+        add_area = request.POST.get('add_area')
+        add_expected = request.POST.get('add_expected')
+        add_notes = request.POST.get('add_notes')
+
+        new_entry = Entry.objects.create(
+            owner=get_object_or_404(User, id=add_owner),
+            institute=add_institute,
+            landmark=add_landmark,
+            stage=get_object_or_404(Stage, id=add_stage),
+            hospital_type=get_object_or_404(HospitalType, id=add_hospital_type),
+            sector=get_object_or_404(Sector, id=add_sector),
+            discipline=get_object_or_404(Discipline, id=add_discipline),
+            area=get_object_or_404(Area, id=add_area),
+            expected=add_expected,
+            notes=add_notes,
+        )
+        new_entry.save()
+        
+        return redirect(reverse('crm_manager_index_view_with_id', kwargs={'subordinate_id': add_owner}))
+
+@login_required
+def add_new_area(request):
+    district = request.POST.get('add_district')
+    area = request.POST.get('new_area_name')
+   
+    district = get_object_or_404(District, id=district)
+
+    new_area = Area.objects.create(name=area, district=district)
+    new_area.save()
+
+    areas = Area.objects.filter(district=district).order_by('name')
+
+    context = {
+        'areas': areas,
+        'selected_area_id': new_area.id,
+    }
+
+    return render(request, 'crm/partials/filter_areas.html', context)
+
+def filter_districts(request):
+    state_code = request.GET.get('add_state')
+    districts = District.objects.filter(state__code=state_code).order_by(Upper('name'))
+    context = {
+        'districts': districts,
+    }
+    return render(request, 'crm/partials/filter_districts.html', context)
+
+def filter_areas(request):
+    district_id = request.GET.get('add_district')
+    areas = Area.objects.filter(district__id=district_id).order_by(Upper('name'))
+    context = {
+        'areas': areas,
+    }
+    return render(request, 'crm/partials/filter_areas.html', context)
 
 def crm_select_view(request):
     context = get_entry_context(request)
@@ -151,6 +220,10 @@ def get_manager_entry_context(request, subordinate_id):
 
     total_va = round(total_va, 1)
 
+    hospital_types = HospitalType.objects.all()
+    sectors = Sector.objects.all()
+    disciplines = Discipline.objects.all()
+
     return {
         'entries': entries_with_products,
         'subordinates': subordinates,
@@ -162,6 +235,11 @@ def get_manager_entry_context(request, subordinate_id):
         'areas': Area.objects.all(),
         'total_va': round(total_va, 1),
         'subordinate_id': subordinate_id if subordinate_id is not None else '',
+        'subordinate': get_object_or_404(User, id=subordinate_id),
+        'hospital_types': hospital_types,
+        'sectors': sectors,
+        'disciplines': disciplines,
+        'expected_choices': Entry.EXPECTED_CHOICES,
     }
 
 def get_subordinates(request):

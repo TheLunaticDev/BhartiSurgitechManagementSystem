@@ -1,0 +1,4 @@
+<option {% if not selected_area_id %}selected disabled{% endif %}>Please Select the Area</option>
+{% for area in areas %}
+<option value="{{ area.id }}" {% if selected_area_id == area.id %}selected{% endif %}>{{ area.name }}</option>
+{% endfor %}

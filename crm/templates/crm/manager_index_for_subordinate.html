@@ -5,8 +5,7 @@
 {% include 'crm/includes/_subordinate_nav_bar.html' %}
 {% url 'crm_manager_index_view_with_id' subordinate_id as target_url %}
 {% url 'crm_manager_edit_view_with_id' subordinate_id as edit_url %}
-{% include "crm/includes/_action_bar.html" with target_url=target_url edit_url=edit_url show_edit=True %}
-
+{% include "crm/includes/_action_bar.html" with show_add_entry_for_subordinate=True target_url=target_url edit_url=edit_url show_edit=True %}
 <div class="w-full mx-auto px-4 py-4">
     <div class="overflow-x-auto shadow-md">
         <table class="w-full uppercase font-medium border-spacing-0 border-collapse text-xs text-left rtl:text-right whitespace-nowrap text-gray-500 dark:text-gray-400">
@@ -14,6 +13,177 @@
             {% include "crm/includes/_table_head.html" %}
             {% include "crm/includes/_table_body.html" with popover_for_crm=True  %}
         </table>
+    </div>
+</div>
+
+<div id="add-entry-for-subordinate-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-4xl max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Add an entry for {{ subordinate.first_name }} {{ subordinate.last_name }}
+                </h3>
+                <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="add-entry-for-subordinate-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-4 md:p-5">
+                {% if errors %}
+                {% for error in errors %}
+                {{ error }}
+                {% endfor %}
+                {% endif %}
+                <form class="space-y-4" action="{% url 'add_new_entry_as_manager' %}" method="post" >
+                    {% csrf_token %}
+                    <input type="hidden" name="add_subordinate_id" value="{{ subordinate_id }}" />
+                    <div class="grid grid-flow-col justify-stretch pb-2">
+                        <div class="pr-2">
+                            <label for="add_institute" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Institute</label>
+                            <input type="text" id="add_institute" name="add_institute" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter Institute name here..." required />
+                        </div>
+                        <div class="pr-2">
+                            <label for="add_landmark" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Landmark</label>
+                            <input type="text" id="add_landmark" name="add_landmark" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter Landmark name here..." />
+                        </div>
+                        <div class="">
+                            <label for="add_stage" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stage</label>
+                            <select id="add_stage" name="add_stage" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                <option selected>Choose the Stage</option>
+                                {% for stage in stages %}
+                                <option value="{{ stage.id }}">{{ stage.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <hr class="pb-2" />
+                    <div class="grid grid-flow-col justify-stretch pb-2">
+                        <div class="pr-2">
+                            <label for="add_hospital_type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hospital Type</label>
+                            <select id="add_hospital_type" name="add_hospital_type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                <option selected>Choose the Hospital Type</option>
+                                {% for hospital_type in hospital_types %}
+                                <option value="{{ hospital_type.id }}">{{ hospital_type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="pr-2">
+                            <label for="add_sector" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sector</label>
+                            <select id="add_sector" name="add_sector" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                <option selected>Choose the Sector</option>
+                                {% for sector in sectors %}
+                                <option value="{{ sector.id }}">{{ sector.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="pr-2">
+                            <label for="add_discipline" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Discipline</label>
+                            <select id="add_discipline" name="add_discipline" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                <option selected>Choose the Discipline</option>
+                                {% for discipline in disciplines %}
+                                <option value="{{ discipline.id }}">{{ discipline.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <hr class="pb-2" />
+                    <div class="flex justify-between pb-2">
+                        <div>
+                            <label for="add_state" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select the State</label>
+                            <select hx-get="{% url 'filter_districts' %}" 
+                                    hx-trigger="change" hx-target="#add_district" 
+                                    hx-swap="innerHTML" id="add_state" name="add_state"
+                                    onchange="document.getElementById('add_district').disabled = false;"
+                                    class="uppercase bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                <option selected disabled>Choose the State</option>
+                                {% for state in states %}
+                                <option value="{{ state.code }}">{{ state.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label for="add_district" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select the District</label>
+                            <select hx-get="{% url 'filter_areas' %}"
+                                    hx-trigger="change" hx-target="#add_area"
+                                    hx-swap="innerHTML"
+                                    onchange="document.getElementById('add_area').disabled = false; document.getElementById('add_new_area_button').disabled = false;"
+                                    disabled id="add_district" name="add_district" class="uppercase bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                <option selected>Please Select State First</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="add_area" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select the Area</label>
+                            <div class="flex items-center">
+                                <select disabled id="add_area" name="add_area" class="uppercase bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                    <option selected>Please Select District First</option>
+                                </select>
+                                <button disabled id="add_new_area_button" data-modal-target="add_area_modal" data-modal-toggle="add_area_modal" type="button" class="px-2">
+                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="pb-2" />
+                    <div class="grid grid-flow-col justify-stretch pb-2">
+                        <div class="pr-2">
+                            <label for="add_expected" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expected</label>
+                            <select id="add_expected" name="add_expected" class="uppercase bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                <option selected disabled>Choose Expected</option>
+                                {% for value, display_name in expected_choices %}
+                                <option value="{{ value }}">{{ display_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label for="add_notes" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Notes</label>
+                            <input type="text" id="add_notes" name="add_notes" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter your notes here..." />
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add Entry</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="add_area_modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Add a new Area
+                </h3>
+                <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="add_area_modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-4 md:p-5">
+                <form hx-post="{% url 'add_new_area' %}" hx-include="#add_district" hx-target="#add_area" hx-swap="innerHTML" class="space-y-4">
+                    {% csrf_token %}
+                    <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
+                      Add New Area <span class="font-medium">(NOTE: Area name should be unique!)</span>
+                    </div>
+                    <div>
+                        <label for="new_area_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Area</label>
+                        <input type="text" id="new_area_name" name="new_area_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Area" required />
+                    </div>
+                    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" data-modal-hide="add_area_modal">Submit</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
