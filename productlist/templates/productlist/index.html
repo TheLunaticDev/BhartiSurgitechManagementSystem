@@ -41,25 +41,30 @@
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
                 <th scope="col" class="px-6 py-3">
-                    Product Name
+                  Product Name
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Category
+                  Category
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Quoted Price
+                  Quoted Price
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Cutoff Price (INCL. GST)
+                  Cutoff Price (INCL. GST)
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Sub Dealer Price
+                  Sub Dealer Price
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    VA
+                  VA
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Incentive
+                  Incentive (E)
+                </th>
+                <th scope="col" class="px-6 py-3">
+                  Incentive (M)
+                </th>
+                <th>
                 </th>
             </tr>
         </thead>
@@ -67,25 +72,37 @@
             {% for product in products %}
             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                 <th hx-get="{% url 'get_product_configurations' product.id %}" hx-trigger="click" hx-target="#popover-content" hx-swap="innerHTML" scope="row" class="popover-trigger px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    {{ product.name }}
+                  {{ product.name }}
                 </th>
                 <td class="px-6">
-                    {{ product.category }}
+                  {{ product.category }}
                 </td>
                 <td class="px-6">
-                    {{ product.quoted_price }}
+                  {{ product.quoted_price }}
                 </td>
                 <td class="px-6">
-                    {{ product.cutoff }}
+                  {{ product.cutoff }}
                 </td>
                 <td class="px-6">
-                    {{ product.dealer_price }}
+                  {{ product.dealer_price }}
                 </td>
                 <td class="px-6">
-                    {{ product.net_va }}
+                  {{ product.net_va }}
                 </td>
                 <td class="px-6">
-                    {{ product.incentive }}
+                  {{ product.employee_incentive }}
+                </td>
+                <td class="px-6">
+                  {{ product.manager_incentive }}
+                </td>
+                <td>
+                  {% if product.brochure %}
+                  <a href="{{ product.brochure.file.url }}">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V4M7 14H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2m-1-5-4 5-4-5m9 8h.01"/>
+                    </svg>
+                  </a>
+                  {% endif %}
                 </td>
             </tr>
             {% endfor %}

@@ -1,3 +1,10 @@
 from django.contrib import admin
+from .models import Brochure, Setting
 
-# Register your models here.
+
+class SettingAdmin(admin.ModelAdmin):
+    model = Setting
+    list_display = ['key', 'description', 'value']
+
+admin.site.register(Brochure)
+admin.site.register(Setting, SettingAdmin)

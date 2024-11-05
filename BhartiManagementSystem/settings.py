@@ -92,8 +92,10 @@ TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
 STATIC_URL = 'static/'
+MEDIA_URL = 'media/'
 
 STATIC_ROOT = '../static/'
+MEDIA_ROOT = '../media/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static',

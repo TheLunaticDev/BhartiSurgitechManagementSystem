@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse, resolve
 from django.db.models import Q
 from .models import CDBEntry
+from crm.models import State, District
 
 def cdb_popover_content(request, entry_id):
     entry = get_object_or_404(CDBEntry, id=entry_id)
@@ -19,6 +20,11 @@ def cdb_popover_content(request, entry_id):
 
 def get_cdb_entries(request):
     cdbentries = CDBEntry.objects.all().order_by('owner')
+
+    state = request.GET.get('state')
+    if state:
+        cdbentries = cdbentries.filter(area__district__state__code=state)
+    print(len(cdbentries))
     
     return cdbentries
 
@@ -34,6 +40,8 @@ def index_view(request):
 
     context = {
         'page_obj': page_obj,
+        'states': State.objects.all(),
+        'districts': District.objects.all(),
     }
     return render(request, 'cdb/index_view.html', context)
 
@@ -77,7 +85,10 @@ def select_view(request):
     paginator = Paginator(entries, entries_per_page)
     
     page_obj = paginator.get_page(page_number)
-    
-    print("Entered Select View........................")
 
-    return render(request, 'cdb/select_view.html', {"page_obj": page_obj})
+    context = {
+        'page_obj': page_obj,
+        'states': State.objects.all(),
+    }
+
+    return render(request, 'cdb/select_view.html', context)

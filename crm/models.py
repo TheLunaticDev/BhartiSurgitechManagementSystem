@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
+from base.models import Setting, Brochure
 
 
 class Sector(models.Model):
@@ -113,6 +114,7 @@ class Product(models.Model):
     purchase_price = models.PositiveBigIntegerField(verbose_name='Purchase Price')
     dealer_price = models.PositiveBigIntegerField(verbose_name='Sub Dealer Price')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    brochure = models.ForeignKey(Brochure, blank=True, null=True, on_delete=models.SET_NULL, related_name='related_products')
 
     def va_percentage(self):
         if self.purchase_price == 0:
@@ -127,6 +129,12 @@ class Product(models.Model):
 
     def incentive(self):
         return round((self.cutoff - self.purchase_price) * (5 / 100))
+
+    def employee_incentive(self):
+        return round(self.incentive() * float(Setting.objects.get(key='EMPLOYEE_INCENTIVE').value))
+
+    def manager_incentive(self):
+        return round(self.incentive() * float(Setting.objects.get(key='MANAGER_INCENTIVE').value))
 
     def va(self):
         return self.net_va()
