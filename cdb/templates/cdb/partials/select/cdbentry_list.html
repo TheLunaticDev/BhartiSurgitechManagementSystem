@@ -23,6 +23,15 @@
       </span>
     </td>
     <td scope="col" class="px-3 py-0">
+      {{ entry.discipline }}
+    </td>
+    <td scope="col" class="px-3 py-0">
+      {{ entry.hospital_type }}
+    </td>
+    <td scope="col" class="px-3 py-0">
+      {{ entry.sector }}
+    </td>
+    <td scope="col" class="px-3 py-0">
       {% if entry.owner.first_name %}
       {{ entry.owner.first_name }}
       {% else %}
