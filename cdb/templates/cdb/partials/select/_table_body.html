@@ -16,7 +16,9 @@
         <input name="selected-checkboxes" type="checkbox" value="{{ entry.id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
       </td>
       <th hx-get="{% url 'cdb_popover_content' entry.id %}" hx-trigger="click" hx-target="#popover-content" hx-swap="innerHTML" hx-indicator=".htmx-indicator" scope="row" class="popover-trigger px-3 py-0 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-        {{ entry.institute }}
+        <span id="cdbentry-{{ entry.id }}-institute" class="{% if entry.visited %}text-green-500{% endif %}">
+          {{ entry.institute }}
+        </span>
       </th>
       <td class="px-3 py-0">
         {{ entry.area.name }} |

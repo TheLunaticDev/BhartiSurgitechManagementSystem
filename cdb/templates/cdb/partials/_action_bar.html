@@ -53,25 +53,26 @@
         <form hx-get="{% url 'cdbentry_list' %}" 
               hx-target="#cdb_entries"
               hx-swap="innerHTML"
-              class="space-y-4">
+              class="space-y-4"
+              id="cdb_filter_form">
           <div>
             <label for="add_state" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">State</label>
             <select id="add_state" name="add_state" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     hx-get="{% url 'filter_districts' %}"
-                    hx-trigger="change" hx-target="#district"
+                    hx-trigger="change" hx-target="#add_district"
                     hx-swap="innerHTML" name="add_state">
               <option value="" selected>No Filter</option>
               {% for state in states %}
-              <option value={{ state.code }}>{{ state.name }}</option>
+              <option value={{ state.code }} {% if submitted_form.state == state.code %}selected{% endif %}>{{ state.name }}</option>
               {% endfor %}
             </select>
           </div>
           <div>
-            <label for="district" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">District</label>
-            <select id="district" name="district" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <label for="add_district" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">District</label>
+            <select id="add_district" name="add_district" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option value="" selected>No Filter</option>
               {% for district in districts %}
-              <option value={{ district.code }}>{{ district.name }}</option>
+              <option value={{ district.id }} {% if submitted_form.district == district.id %}selected{% endif %}>{{ district.name }}</option>
               {% endfor %}
             </select>
           </div>

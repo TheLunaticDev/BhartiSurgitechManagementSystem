@@ -1,0 +1,149 @@
+<div>
+  <div class="pb-2 text-sm text-yellow-800 text-center rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300">
+    <span class="font-medium">{{ entry.institute }}</span>
+  </div>
+  <hr class="text-white mb-2" />
+  {% for admin in entry.admins.all %}
+  <div class="pb-2">
+    {% if admin.name %}
+    <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3">
+      <span class="bg-yellow-100 text-yellow-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Admin</span>
+      <span class="pr-2">{{ admin.name }}</span>
+      {% if admin.designation %}
+      <span class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-purple-300">{{ admin.designation }}</span>
+        {% endif %}
+      </span>
+      {% endif %}
+      {% if admin.email %}
+      Email: <span class="text-black dark:text-white">{{ admin.email }}</span><br />
+      {% endif %}
+      {% if admin.phone_number %}
+      Phone Number: <span class="text-black dark:text-white">{{ admin.phone_number }}</span><br />
+      {% endif %}
+    </span>
+  </div>
+  <hr class="pb-2" />
+    {% endfor %}
+
+    {% for doctor in entry.doctors.all %}
+    <div class="pb-2">
+        {% if doctor.name %}
+        <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3">
+            <span class="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Doctor</span>
+            <span class="pr-2">{{ doctor.name }}</span>
+            {% if doctor.designation %}
+            <span class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-purple-300">{{ doctor.designation }}</span>
+            {% endif %}
+            {% if doctor.speciality %}
+            <span class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-indigo-900 dark:text-indigo-300">{{ doctor.speciality }}</span>
+            {% endif %}
+        </span>
+        {% endif %}
+        {% if doctor.email %}
+        Email: <span class="text-black dark:text-white">{{ doctor.email }}</span><br />
+        {% endif %}
+        {% if doctor.phone_number %}
+        Phone Number: <span class="text-black dark:text-white">{{ doctor.phone_number }}</span><br />
+        {% endif %}
+    </div>
+    <hr class="pb-2" />
+    {% endfor %}
+
+    {% for reference in entry.references.all %}
+    <div class="pb-2">
+        {% if reference.name %}
+        <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3">
+            <span class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">Reference</span>
+            <span class="pr-2">{{ reference.name }}</span>
+        </span>
+        {% endif %}
+        {% if reference.email %}
+        Email: <span class="text-block dark:text-white">{{ reference.email }}</span><br />
+        {% endif %}
+        {% if reference.phone_number %}
+        Phone Number: <span class="text-black dark:text-white">{{ reference.phone_number }}</span><br />
+        {% endif %}
+    </div>
+    <hr class="pb-2" />
+    {% endfor %}
+
+    {% if not hide_popover_products %}
+    <div class="pb-2">
+      <div class="relative overflow-x-auto">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" class="">Product</th>
+              <th scope="col" class="">Count</th>
+              <th scope="col" class="">QP</th>
+              <th scope="col" class="">Cutoff</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for product in product_entry %}
+            <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+              <td>{{ product.name }}</td>
+              <td>{{ product.count }}</td>
+              <td>{{ product.quoted_price }}</td>
+              <td>{{ product.cutoff }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <hr class="pb-2" />
+    {% endif %}
+
+    <div class="pb-2">
+      <h3 class="text-md text-bold text-center text-cyan-500 pb-2">Other Information</h3>
+      Discipline: <span class="text-black dark:text-white">{{ entry.discipline }}</span><br />
+      Hospital Type: <span class="text-black dark:text-white">{{ entry.hospital_type }}</span><br />
+      Sector: <span class="text-black dark:text-white">{{ entry.sector }}</span><br />
+      Landmark: <span class="text-black dark:text-white">{{ entry.landmark }}</span><br />
+    </div>
+    <hr class="pb-2" />
+
+    {% if entry.notes %}
+    <div class="pb-2">
+        <strong class="text-bold">Notes</strong><br />
+        {{ entry.notes }}
+    </div>
+    <hr class="pb-2" />
+    {% endif %}
+
+    <div class="flex">
+      {% if entry.created_on %}
+      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+      </svg>
+      <div class="px-2 flex">
+        <span class="pr-2">
+          {{ entry.created_on|date }}
+        </span>
+        <span class="bg-gray-100 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded me-2 dark:bg-gray-700 dark:text-gray-400 border border-gray-500 ">
+          <svg class="w-2.5 h-2.5 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
+          </svg>
+          {{ entry.time_since_creation }}
+        </span>
+        {% endif %}
+        <a href="{{ popover_edit_link }}">
+          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+          </svg>
+        </a>
+        <button hx-post="{% url 'cdb_toggle_visited' entry.id %}" hx-trigger="click" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-target="#cdbentry-{{ entry.id }}-institute" hx-swap="outerHTML" type="button" class="inline-flex items-center">
+          {% if entry.visited %}
+          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+            <path fill-rule="evenodd" d="M12 2c-.791 0-1.55.314-2.11.874l-.893.893a.985.985 0 0 1-.696.288H7.04A2.984 2.984 0 0 0 4.055 7.04v1.262a.986.986 0 0 1-.288.696l-.893.893a2.984 2.984 0 0 0 0 4.22l.893.893a.985.985 0 0 1 .288.696v1.262a2.984 2.984 0 0 0 2.984 2.984h1.262c.261 0 .512.104.696.288l.893.893a2.984 2.984 0 0 0 4.22 0l.893-.893a.985.985 0 0 1 .696-.288h1.262a2.984 2.984 0 0 0 2.984-2.984V15.7c0-.261.104-.512.288-.696l.893-.893a2.984 2.984 0 0 0 0-4.22l-.893-.893a.985.985 0 0 1-.288-.696V7.04a2.984 2.984 0 0 0-2.984-2.984h-1.262a.985.985 0 0 1-.696-.288l-.893-.893A2.984 2.984 0 0 0 12 2Zm3.683 7.73a1 1 0 1 0-1.414-1.413l-4.253 4.253-1.277-1.277a1 1 0 0 0-1.415 1.414l1.985 1.984a1 1 0 0 0 1.414 0l4.96-4.96Z" clip-rule="evenodd"/>
+          </svg>
+          {% else %}
+          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8.032 12 1.984 1.984 4.96-4.96m4.55 5.272.893-.893a1.984 1.984 0 0 0 0-2.806l-.893-.893a1.984 1.984 0 0 1-.581-1.403V7.04a1.984 1.984 0 0 0-1.984-1.984h-1.262a1.983 1.983 0 0 1-1.403-.581l-.893-.893a1.984 1.984 0 0 0-2.806 0l-.893.893a1.984 1.984 0 0 1-1.403.581H7.04A1.984 1.984 0 0 0 5.055 7.04v1.262c0 .527-.209 1.031-.581 1.403l-.893.893a1.984 1.984 0 0 0 0 2.806l.893.893c.372.372.581.876.581 1.403v1.262a1.984 1.984 0 0 0 1.984 1.984h1.262c.527 0 1.031.209 1.403.581l.893.893a1.984 1.984 0 0 0 2.806 0l.893-.893a1.985 1.985 0 0 1 1.403-.581h1.262a1.984 1.984 0 0 0 1.984-1.984V15.7c0-.527.209-1.031.581-1.403Z"/>
+          </svg>
+          {% endif %}
+        </button>
+      </div>
+    </div>
+</div>
