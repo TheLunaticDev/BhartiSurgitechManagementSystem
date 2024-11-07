@@ -12,7 +12,9 @@
     </td>
     {% endif %}
     <th hx-get="{% if popover_for_crm %}{% url 'crm_popover_content' entry.id %}{% elif popover_for_cdb %}{% url 'cdb_popover_content' entry.id %}{% elif popover_for_tp %}{% url 'tp_popover_content' entry.id %}{% endif %}" hx-trigger="click" hx-target="#popover-content" hx-swap="innerHTML" hx-indicator=".htmx-indicator" scope="row" class="popover-trigger px-3 py-0 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-      {{ entry.institute }}
+      <span class="{% if entry.yet_to_be_contacted %}text-red-800 dark:text-red-500{% endif %}">
+        {{ entry.institute }}
+      </span>
     </th>
     <td class="px-3 py-0">
       {{ entry.area.name }} |
@@ -52,7 +54,7 @@
       {% endif %}
     </td>
     {% endif %}
-    {% if not hide_products%}
+    {% if not hide_products %}
     <td class="px-3 py-0">
       {% for product in entry.products.all %}
       <span data-popover-target="popover-{{ entry.id }}-{{ product.id }}" data-popover-placement="top" style="background-color: {{ product.category.background_color }}; color: {{ product.category.text_color }};">{{ product.name }}</span>

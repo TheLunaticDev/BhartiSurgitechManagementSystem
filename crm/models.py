@@ -185,6 +185,12 @@ class Entry(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     schedule_date = models.DateTimeField(blank=True, null=True)
 
+    def yet_to_be_contacted(self):
+        if self.stage.group and self.stage.group.name == 'BIRD':
+            if self.created_on < timezone.now() - datetime.timedelta(days=2):
+                return True
+        return False
+
     def va(self):
         total_value = sum(product_entry.count * product_entry.product.va() for product_entry in self.product_entries.all())
         return total_value
