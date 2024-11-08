@@ -183,7 +183,7 @@ class Entry(models.Model):
     products = models.ManyToManyField(Product, through='ProductEntry')
     notes = models.CharField(max_length=2000, blank=True)
     created_on = models.DateTimeField(auto_now_add=True)
-    schedule_date = models.DateTimeField(blank=True, null=True)
+    has_been_executed = models.BooleanField(default=False)
 
     def yet_to_be_contacted(self):
         if self.stage.group and self.stage.group.name == 'BIRD':

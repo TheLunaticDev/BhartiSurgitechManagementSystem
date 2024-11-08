@@ -7,6 +7,17 @@ from .models import TPEntry
 from crm.models import Entry
 from cdb.models import CDBEntry
 
+def tp_toggle_not_visited(request, entry_id):
+    entry = get_object_or_404(TPEntry, id=entry_id)
+    entry.not_visited = not entry.not_visited
+    entry.save()
+    
+    context = {
+        'entry': entry,
+    }
+
+    return render(request, 'tp/partials/_table_row.html', context)
+
 def edit_field(request, entry_id, field_name):
     entry = get_object_or_404(TPEntry, id=entry_id)
     context = {
@@ -28,7 +39,7 @@ def update_field(request, entry_id, field_name):
 def tp_popover_content(request, entry_id):
     entry = get_object_or_404(TPEntry, id=entry_id)
     popover_edit_link = reverse('admin:tp_tpentry_change', args=(entry_id,))
-    return render(request, 'crm/includes/_popover_content.html', {'entry': entry, 'popover_edit_link': popover_edit_link})
+    return render(request, 'tp/partials/_popover_content.html', {'entry': entry, 'popover_edit_link': popover_edit_link})
 
 @login_required
 def index_view(request):

@@ -1,0 +1,5 @@
+<th id="tpentry-{{ entry.id }}-institute" hx-get="{% url 'tp_popover_content' entry.id %}" hx-trigger="click" hx-target="#popover-content" hx-swap="innerHTML" hx-indicator=".htmx-indicator" scope="row" class="popover-trigger px-3 py-0 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+  <span class="flex {% if entry.not_visited %}text-red-800 dark:text-red-500{% endif %}">
+    {{ entry.institute }}
+  </span>
+</th>

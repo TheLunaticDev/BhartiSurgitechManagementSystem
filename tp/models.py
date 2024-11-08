@@ -36,6 +36,7 @@ class TPEntry(models.Model):
     products = models.ManyToManyField(Product, blank=True)
     schedule = models.DateTimeField(blank=True, null=True)
     purpose = models.ForeignKey(Purpose, on_delete=models.CASCADE, null=True, blank=True)
+    not_visited = models.BooleanField(default=False)
 
     def __str__(self):
         return self.institute

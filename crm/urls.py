@@ -14,4 +14,6 @@ urlpatterns = [
     path('filter/areas/', views.filter_areas, name='filter_areas'),
     path('add/area', views.add_new_area, name='add_new_area'),
     path('manager/add/entry/', views.add_new_entry_as_manager, name='add_new_entry_as_manager'),
+    path('execution/toggle/<int:entry_id>/', views.toggle_crm_execution, name='crm_toggle_execution'),
+    path('execution/render/table/<int:user_id>/', views.render_execution_table_for_user, name='crm_render_execution_table_for_user'),
 ]

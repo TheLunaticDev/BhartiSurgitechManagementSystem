@@ -8,4 +8,5 @@ urlpatterns = [
     path('entry/add/crm', views.add_entry_from_crm, name='tp_add_entry_from_crm'),
     path('entry/add/cdb', views.add_entry_from_cdb, name='tp_add_entry_from_cdb'),
     path('popover-content/<int:entry_id>/', views.tp_popover_content, name='tp_popover_content'),
+    path('toggle/not_visited/<int:entry_id>/', views.tp_toggle_not_visited, name="tp_toggle_not_visited"),
 ]

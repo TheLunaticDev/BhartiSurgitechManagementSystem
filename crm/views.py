@@ -19,6 +19,32 @@ from sysadmin.models import Manager
 from dal import autocomplete
 
 @login_required
+def render_execution_table_for_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    executed_entries = Entry.objects.filter(owner=user, has_been_executed=True)
+
+    context = {
+        'entries': executed_entries,
+    }
+
+    return render(request, 'crm/partials/_execution_table_for_user.html', context)
+
+@login_required
+def toggle_crm_execution(request, entry_id):
+    if request.method == 'POST':
+        entry = get_object_or_404(Entry, id=entry_id)
+        entry.has_been_executed = not entry.has_been_executed
+        entry.save()
+
+    context = {
+        'entry': entry,
+    }
+
+    return render(request, 'crm/partials/_table_row.html', context)
+
+    
+
+@login_required
 def add_new_entry_as_manager(request):
     if request.method == 'POST':
         add_owner = request.POST.get('add_subordinate_id')
@@ -238,6 +264,7 @@ def get_manager_entry_context(request, subordinate_id):
         'total_va': round(total_va, 1),
         'subordinate_id': subordinate_id if subordinate_id is not None else '',
         'subordinate': get_object_or_404(User, id=subordinate_id),
+        'user': get_object_or_404(User, id=subordinate_id),
         'hospital_types': hospital_types,
         'sectors': sectors,
         'disciplines': disciplines,
@@ -353,6 +380,7 @@ def get_entry_context(request):
         'products': Product.objects.all(),
         'total_va': round(total_va, 1),
         'areas': Area.objects.all(),
+        'user': request.user,
     }
 
 @login_required
