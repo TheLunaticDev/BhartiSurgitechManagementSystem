@@ -70,6 +70,9 @@
     <td hx-get="{% url 'edit_field' entry.id 'schedule' %}" hx-trigger="click" hx-target="#field-schedule-{{ entry.id }}" id="field-schedule-{{ entry.id }}" scope="col" class="px-3 py-0">
       <span>{{ entry.schedule|date:"d-m-Y" }}</span>
     </td>
+    <td class="px-3 py-0">
+      {{ entry.schedule|date:"l"}}
+    </td>
     <td scope="col" class="px-3 py-0">
       {{ entry.schedule|date:"g:i A"}}
     </td>
