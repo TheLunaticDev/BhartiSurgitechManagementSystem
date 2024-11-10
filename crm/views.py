@@ -19,14 +19,158 @@ from sysadmin.models import Manager
 from dal import autocomplete
 
 @login_required
-def render_execution_table_for_user(request, user_id):
-    user = get_object_or_404(User, id=user_id)
-    executed_entries = Entry.objects.filter(owner=user, has_been_executed=True)
+def get_manager_execution_context(request):
+    try:
+        manager = Manager.objects.get(user=request.user)
+    except Manager.DoesNotExist:
+        manager = None
+        
+    if manager is None:
+        return None
+    
+    # Retrieve subordinates under the manager
+    subordinates = manager.subordinates.all()
 
-    context = {
-        'entries': executed_entries,
+    executions = {}
+    total_business = {}
+
+    for group in StageGroup.objects.all():
+        total_business[group.name] = {}
+        total_business[group.name]['count'] = 0
+        total_business[group.name]['total_va'] = 0
+        total_business[group.name]['color'] = group.text_color
+
+
+    for subordinate in subordinates:
+        entries = Entry.objects.filter(owner=subordinate, has_been_executed=True)
+        
+        if len(entries) == 0:
+            continue
+
+        entries = entries.prefetch_related(
+            Prefetch(
+                'products',
+                queryset=Product.objects.select_related('category').order_by('category__order', 'name')
+            )
+        )
+
+        # Add products information to entries
+        entries_with_products = []
+
+        stage_group_entries = {}
+
+        for group in StageGroup.objects.all():
+            stage_group_entries[group.name] = {}
+            stage_group_entries[group.name]['count'] = 0
+            stage_group_entries[group.name]['total_va'] = 0
+            stage_group_entries[group.name]['color'] = group.text_color
+
+        for entry in entries:
+            if entry.stage.group:
+                stage_group_entries[entry.stage.group.name]['count'] += 1
+                total_business[entry.stage.group.name]['count'] += 1
+                stage_group_entries[entry.stage.group.name]['total_va'] += entry.va()
+                total_business[entry.stage.group.name]['total_va'] += entry.va()
+
+            total_products = 0
+            for product in entry.products.all():
+                product_entry = ProductEntry.objects.get(product=product, entry=entry)
+                product.count = product_entry.count
+                total_products += product.count
+            entry.total_products = total_products
+            entries_with_products.append(entry)
+    
+        total_va = 0
+        for entries in stage_group_entries:
+            stage_group_entries[entries]['total_va'] = round(stage_group_entries[entries]['total_va'], 1)
+            total_va += stage_group_entries[entries]['total_va']
+
+        total_va = round(total_va, 1)
+
+        executions[subordinate.id] = {
+            'total_va': total_va,
+            'stage_group_entries': stage_group_entries,
+            'entries': entries_with_products,
+            'user': get_object_or_404(User, id=subordinate.id),
+        }
+
+
+    total_business['total'] = 0
+
+    for group in StageGroup.objects.all():
+        total_business['total'] += total_business[group.name]['total_va']
+        total_business[group.name]['total_va'] = round(total_business[group.name]['total_va'], 1)
+
+    total_business['total'] = round(total_business['total'], 1)
+
+
+    return {
+        'executions': executions,
+        'total_business': total_business,
     }
 
+@login_required
+def manager_execution_view(request):
+    context = get_manager_execution_context(request)
+    return render(request, 'crm/execution.html', context)
+
+@login_required
+def get_execution_context(request, user_id):
+    entries = Entry.objects.filter(owner=user_id, has_been_executed=True)
+    
+    entries = entries.prefetch_related(
+        Prefetch(
+            'products',
+            queryset=Product.objects.select_related('category').order_by('category__order', 'name')
+        )
+    )
+
+    entries_with_products = []
+    stage_group_entries = {}
+
+    for group in StageGroup.objects.all():
+        stage_group_entries[group.name] = {}
+        stage_group_entries[group.name]['count'] = 0
+        stage_group_entries[group.name]['color'] = group.text_color
+        stage_group_entries[group.name]['total_va'] = 0
+
+    for entry in entries:
+        if entry.stage.group:
+            stage_group_entries[entry.stage.group.name]['count'] += 1
+            stage_group_entries[entry.stage.group.name]['total_va'] += entry.va()
+
+        total_products = 0
+        for product in entry.products.all():
+            product_entry = ProductEntry.objects.get(product=product, entry=entry)
+            product.count = product_entry.count
+            total_products += product.count
+        entry.total_products = total_products
+        entries_with_products.append(entry)
+    
+    total_va = 0
+    for entries in stage_group_entries:
+        stage_group_entries[entries]['total_va'] = round(stage_group_entries[entries]['total_va'], 1)
+        total_va += stage_group_entries[entries]['total_va']
+    
+    total_va = round(total_va, 1)
+
+    return {
+        'entries': entries_with_products,
+        'stages': Stage.objects.all(),
+        'stage_group_entries': stage_group_entries,
+        'states': State.objects.all(),
+        'districts': District.objects.all(),
+        'products': Product.objects.all(),
+        'total_va': round(total_va, 1),
+        'areas': Area.objects.all(),
+        'user': user_id,
+    }
+
+
+@login_required
+def render_execution_table_for_user(request, user_id):
+    context = get_execution_context(request, user_id=user_id)
+    
     return render(request, 'crm/partials/_execution_table_for_user.html', context)
 
 @login_required

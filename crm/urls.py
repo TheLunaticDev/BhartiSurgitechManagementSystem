@@ -6,6 +6,7 @@ urlpatterns = [
     path('manage/init/', views.manager_index_view_initial, name="crm_manager_index_view_initial"),
     path('manager/', views.manager_index_view, name="crm_manager_index_view"),
     path('manager/<int:subordinate_id>/', views.manager_index_view, name="crm_manager_index_view_with_id"),
+    path('manager/execution/', views.manager_execution_view, name="crm_manager_execution_view"),
     path('district-autocomplete/', views.DistrictAutoComplete.as_view(), name="district-autocomplete"),
     path('doctor-autocomplete/', views.DoctorAutoComplete.as_view(), name='doctor-autocomplete'),
     path('popover-content/<int:entry_id>', views.crm_popover_content, name='crm_popover_content'),

@@ -1,15 +1,27 @@
+{% extends "base.html" %}
+{% load add_attr %}
+{% block title %}CRM{% endblock %}
+{% block content %}
+{% for id, data in executions.items %}
 <div class="w-full mx-auto px-4 py-4">
     <div class="overflow-x-auto shadow-md">
         <table class="w-full uppercase font-medium border-spacing-0 border-collapse text-xs text-left rtl:text-right whitespace-nowrap text-gray-500 dark:text-gray-400">
           <caption class="px-5 py-2 text-sm font-semibold text-center text-gray-900 bg-white dark:text-white dark:bg-gray-800">
             <div class="flex justify-evenly">
-              {% for key, value in stage_group_entries.items %}
+              <div class="text-white">
+                Execution List of {% if data.user.first_name %}{{ data.user.first_name }} {{ data.user.last_name }}{% else %}{{ data.user.username }}{% endif %}
+              </div>
+            </div>
+          </caption>
+          <caption class="px-5 py-2 text-sm font-semibold text-center text-gray-900 bg-white dark:text-white dark:bg-gray-800">
+            <div class="flex justify-evenly">
+              {% for key, value in data.stage_group_entries.items %}
               <div style="color: {{ value.color }}">
                 {{ key }}: {{ value.count }} - va - {{ value.total_va }}
               </div>
               {% endfor %}
               <div class="text-white">
-                Total VA: <span class="font-bold">{{ total_va }}</span>
+                Total VA: <span class="font-bold">{{ data.total_va }}</span>
               </div>
             </div>
           </caption>
@@ -57,7 +69,7 @@
 
 
           <tbody>
-            {% for entry in entries %}
+            {% for entry in data.entries %}
             <tr style="pointer-events: none;" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
               <th style="pointer-events: none;" scope="row" class="popover-trigger px-3 py-0 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                 <span class="flex {% if entry.yet_to_be_contacted %}text-red-800 dark:text-red-500{% endif %}">
@@ -111,3 +123,33 @@
         </table>
     </div>
 </div>
+{% endfor %}
+
+<hr class="my-2" />
+
+<caption class="px-5 py-2 text-sm font-semibold text-center text-gray-900 bg-white dark:text-white dark:bg-gray-800">
+  <div class="flex justify-evenly">
+    <div class="text-white">
+        Total Execution
+    </div>
+  </div>
+</caption>
+
+<caption class="px-5 py-2 my-3 text-sm font-semibold text-center text-gray-900 bg-white dark:text-white dark:bg-gray-800">
+  <div class="flex justify-evenly">
+    {% for key, value in total_business.items %}
+    <div style="color: {{ value.color }}">
+      {{ key }}: {{ value.count }} - va - {{ value.total_va }}
+    </div>
+    {% endfor %}
+    <div class="text-white">
+      Total VA: <span class="font-bold">{{ total_business.total }}</span>
+    </div>
+  </div>
+</caption>
+
+
+{% endblock %}
+
+
+
