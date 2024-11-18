@@ -1,4 +1,5 @@
 import time
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -17,6 +18,44 @@ from cdb.models import (
 from .decorators import group_required
 from sysadmin.models import Manager
 from dal import autocomplete
+
+@login_required
+def change_execution_details(request, entry_id):
+    if request.method == 'POST':
+        selected_product_entry_ids = request.POST.getlist('selected-products')
+
+        product_entries = ProductEntry.objects.filter(entry=entry_id)
+        for pe in product_entries:
+            if str(pe.id) in selected_product_entry_ids:
+                pe.has_execution = True
+                try:
+                    pe.execution_count = int(request.POST.get(str(pe.id) + '-count'))
+                    pe.execution_va = float(request.POST.get(str(pe.id) + '-va'))
+                except:
+                    pass
+            else:
+                pe.has_execution = False
+
+            print(pe.has_execution)
+            pe.save()
+
+        entry = get_object_or_404(Entry, id=entry_id)
+        owner = entry.owner
+        if request.user == owner:
+            return redirect('crm_index_view')
+        else:
+            return redirect(reverse('crm_manager_index_view_with_id', kwargs={'subordinate_id': owner.id}))
+
+    else:
+        entry = get_object_or_404(Entry, id=entry_id)
+        product_entries = ProductEntry.objects.filter(entry=entry).order_by('product__category__order')
+
+        context = {
+            'entry': entry,
+            'product_entries': product_entries,
+        }
+
+        return render(request, 'crm/partials/_change_execution_details_form.html', context)
 
 @login_required
 def get_manager_execution_context(request):
@@ -49,14 +88,12 @@ def get_manager_execution_context(request):
 
         entries = entries.prefetch_related(
             Prefetch(
-                'products',
-                queryset=Product.objects.select_related('category').order_by('category__order', 'name')
+                'product_entries',
+                queryset=ProductEntry.objects.filter(has_execution=True).select_related('product__category').order_by('product__category__order', 'product__name')
             )
         )
 
-        # Add products information to entries
         entries_with_products = []
-
         stage_group_entries = {}
 
         for group in StageGroup.objects.all():
@@ -69,14 +106,15 @@ def get_manager_execution_context(request):
             if entry.stage.group:
                 stage_group_entries[entry.stage.group.name]['count'] += 1
                 total_business[entry.stage.group.name]['count'] += 1
-                stage_group_entries[entry.stage.group.name]['total_va'] += entry.va()
-                total_business[entry.stage.group.name]['total_va'] += entry.va()
+                stage_group_entries[entry.stage.group.name]['total_va'] += entry.execution_va()
+                total_business[entry.stage.group.name]['total_va'] += entry.execution_va()
 
             total_products = 0
             for product in entry.products.all():
                 product_entry = ProductEntry.objects.get(product=product, entry=entry)
-                product.count = product_entry.count
-                total_products += product.count
+                if product_entry.has_execution:
+                    product.count = product_entry.execution_count
+                    total_products += product.count
             entry.total_products = total_products
             entries_with_products.append(entry)
     
@@ -120,8 +158,8 @@ def get_execution_context(request, user_id):
     
     entries = entries.prefetch_related(
         Prefetch(
-            'products',
-            queryset=Product.objects.select_related('category').order_by('category__order', 'name')
+            'product_entries',
+            queryset=ProductEntry.objects.filter(has_execution=True).select_related('product__category').order_by('product__category__order', 'product__name')
         )
     )
 
@@ -137,13 +175,13 @@ def get_execution_context(request, user_id):
     for entry in entries:
         if entry.stage.group:
             stage_group_entries[entry.stage.group.name]['count'] += 1
-            stage_group_entries[entry.stage.group.name]['total_va'] += entry.va()
+            stage_group_entries[entry.stage.group.name]['total_va'] += entry.execution_va()
 
         total_products = 0
         for product in entry.products.all():
             product_entry = ProductEntry.objects.get(product=product, entry=entry)
-            product.count = product_entry.count
-            total_products += product.count
+            if product_entry.has_execution:
+                total_products += product_entry.execution_count
         entry.total_products = total_products
         entries_with_products.append(entry)
     

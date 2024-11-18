@@ -1,113 +1,121 @@
+{% load compress %}
 <div class="w-full mx-auto px-4 py-4">
-    <div class="overflow-x-auto shadow-md">
-        <table class="w-full uppercase font-medium border-spacing-0 border-collapse text-xs text-left rtl:text-right whitespace-nowrap text-gray-500 dark:text-gray-400">
-          <caption class="px-5 py-2 text-sm font-semibold text-center text-gray-900 bg-white dark:text-white dark:bg-gray-800">
-            <div class="flex justify-evenly">
-              {% for key, value in stage_group_entries.items %}
-              <div style="color: {{ value.color }}">
-                {{ key }}: {{ value.count }} - va - {{ value.total_va }}
-              </div>
-              {% endfor %}
-              <div class="text-white">
-                Total VA: <span class="font-bold">{{ total_va }}</span>
-              </div>
+  <div class="overflow-x-auto shadow-md">
+      <table class="w-full uppercase font-medium border-spacing-0 border-collapse text-xs text-left rtl:text-right whitespace-nowrap text-gray-500 dark:text-gray-400">
+        <caption class="px-5 py-2 text-sm font-semibold text-center text-gray-900 bg-white dark:text-white dark:bg-gray-800">
+          <div class="flex justify-evenly">
+            {% for key, value in stage_group_entries.items %}
+            <div style="color: {{ value.color }}">
+              {{ key }}: {{ value.count }} - va - {{ value.total_va }}
             </div>
-          </caption>
+            {% endfor %}
+            <div class="text-white">
+              Total VA: <span class="font-bold">{{ total_va }}</span>
+            </div>
+          </div>
+        </caption>
 
 
-          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr style="pointer-events: none;">
-              <th style="pointer-events: none;" scope="col" class="px-3 py-3">
-                Institute
-              </th>
-              <th scope="col" class="px-3 py-3">
-                <div class="flex items-center">
-                  Location
-                </div>
-              </th>
-              <th scope="col" class="px-3 py-3">
-                <div class="flex items-center">
-                  Stage
-                </div>
-              </th>
-              <th scope="col" class="px-3 py-3">
-                <div class="flex items-center">
-                  Win
-                </div>
-              </th>
-              <th scope="col" class="px-3 py-3">
-                <div class="flex items-center">
-                  Expected
-                </div>
-              </th>
-              <th scope="col" class="px-3 py-3">
-                <div class="flex items-center">
-                  Total
-                </div>
-              </th>
-              <th scope="col" class="px-3 py-3">
-                <div class="flex items-center">
-                  VA
-                </div>
-              </th>
-              <th scope="col" class="px-3 py-3">
-                Products
-              </th>
-          </thead>
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr style="pointer-events: none;">
+            <th></th>
+            <th style="pointer-events: none;" scope="col" class="px-3 py-3">
+              Institute
+            </th>
+            <th scope="col" class="px-3 py-3">
+              <div class="flex items-center">
+                Location
+              </div>
+            </th>
+            <th scope="col" class="px-3 py-3">
+              <div class="flex items-center">
+                Stage
+              </div>
+            </th>
+            <th scope="col" class="px-3 py-3">
+              <div class="flex items-center">
+                Win
+              </div>
+            </th>
+            <th scope="col" class="px-3 py-3">
+              <div class="flex items-center">
+                Expected
+              </div>
+            </th>
+            <th scope="col" class="px-3 py-3">
+              <div class="flex items-center">
+                Total
+              </div>
+            </th>
+            <th scope="col" class="px-3 py-3">
+              <div class="flex items-center">
+                VA
+              </div>
+            </th>
+            <th scope="col" class="px-3 py-3">
+              Products
+            </th>
+        </thead>
 
 
-          <tbody>
-            {% for entry in entries %}
-            <tr style="pointer-events: none;" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <th style="pointer-events: none;" scope="row" class="popover-trigger px-3 py-0 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                <span class="flex {% if entry.yet_to_be_contacted %}text-red-800 dark:text-red-500{% endif %}">
-                  {% if entry.has_been_executed %}
-                  <span class="flex mx-px my-auto w-3 h-3 me-3 bg-yellow-300 rounded-full"></span>
-                  {% endif %}
-                  {{ entry.institute }}
-                </span>
-              </th>
-              <td class="px-3 py-0">
-                {{ entry.area.name }} |
-                {{ entry.area.district }} |
-                <span data-tooltip-target="tooltip-state-{{ entry.id }}">
-                  {{ entry.area.district.state.code }}
-                </span>
-              </td>
-              <td class="px-3 py-0">
-                <span data-tooltip-target="tooltip-stage-{{ entry.id }}">
-                  {{ entry.stage.name }}
-                </span>
-              </td>
-              <td class="px-3 py-0">
-                {% if entry.stage.win != 0 %}
-                {{ entry.stage.win }}%
-                {% endif %}
-              </td>
-              <td class="px-3 py-0">
-                {{ entry.get_expected_display }}
-              </td>
-              <td class="px-3 py-0">
-                {{ entry.total_products }}
-              </td>
-              <td class="px-3 py-0">
-                {% if entry.va is not None %}
-                {{ entry.va|floatformat:1 }}
-                {% endif %}
-              </td>
-              <td class="px-3 py-0">
-                {% for product in entry.products.all %}
-                <span data-popover-target="popover-{{ entry.id }}-{{ product.id }}" data-popover-placement="top" style="background-color: {{ product.category.background_color }}; color: {{ product.category.text_color }};">{{ product.name }}</span>
-                <div id="popover-{{ entry.id }}-{{ product.id }}" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip">
-                  {{ product.count }}
-                  <div class="tooltip-arrow" data-popper-arrow></div>
-                </div>
-                {% if not forloop.last %} | {% endif %}
-                {% endfor %}
-              </td>
-            </tr>
-          {% endfor %}
-          </tbody>
-        </table>
-    </div>
+        <tbody>
+          {% for entry in entries %}
+          <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <td>
+              <a hx-get="{% url 'crm_change_execution_details' entry.id %}" hx-trigger="click" hx-target="#execution-change-form" hx-swap="innerHTML">
+                <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"/>
+                </svg>
+              </a>
+            </td>
+            <th style="pointer-events: none;" scope="row" class="popover-trigger px-3 py-0 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              <span class="flex">
+                {{ entry.institute }}
+              </span>
+            </th>
+            <td class="px-3 py-0">
+              {{ entry.area.name }} |
+              {{ entry.area.district }} |
+              <span data-tooltip-target="tooltip-state-{{ entry.id }}">
+                {{ entry.area.district.state.code }}
+              </span>
+            </td>
+            <td class="px-3 py-0">
+              <span data-tooltip-target="tooltip-stage-{{ entry.id }}">
+                {{ entry.stage.name }}
+              </span>
+            </td>
+            <td class="px-3 py-0">
+              {% if entry.stage.win != 0 %}
+              {{ entry.stage.win }}%
+              {% endif %}
+            </td>
+            <td class="px-3 py-0">
+              {{ entry.get_expected_display }}
+            </td>
+            <td class="px-3 py-0">
+              {{ entry.total_products }}
+            </td>
+            <td class="px-3 py-0">
+              {% if entry.execution_va is not None %}
+              {{ entry.execution_va|floatformat:1 }}
+              {% endif %}
+            </td>
+            <td class="px-3 py-0">
+              {% for pe in entry.product_entries.all %}
+              <span data-popover-target="popover-{{ entry.id }}-{{ pe.product.id }}" data-popover-placement="top" style="background-color: {{ pe.product.category.background_color }}; color: {{ pe.product.category.text_color }};">{{ pe.product.name }}</span>
+              {% if not forloop.last %} | {% endif %}
+              {% endfor %}
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+  </div>
+  <div class="p-2 mt-4 text-black dark:text-white bg-white dark:bg-black rounded">
+    <p id="execution-change-form" class="text-center">
+      Click <svg class="inline w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"/></svg>
+      to edit. The Edit form will appear here...
+    </p>
+  </div>
 </div>

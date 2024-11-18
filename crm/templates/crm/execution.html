@@ -9,7 +9,7 @@
           <caption class="px-5 py-2 text-sm font-semibold text-center text-gray-900 bg-white dark:text-white dark:bg-gray-800">
             <div class="flex justify-evenly">
               <div class="text-white">
-                Execution List of {% if data.user.first_name %}{{ data.user.first_name }} {{ data.user.last_name }}{% else %}{{ data.user.username }}{% endif %}
+                {% if data.user.first_name %}{{ data.user.first_name }} {{ data.user.last_name }}{% else %}{{ data.user.username }}{% endif %}
               </div>
             </div>
           </caption>
@@ -108,12 +108,8 @@
                 {% endif %}
               </td>
               <td class="px-3 py-0">
-                {% for product in entry.products.all %}
-                <span data-popover-target="popover-{{ entry.id }}-{{ product.id }}" data-popover-placement="top" style="background-color: {{ product.category.background_color }}; color: {{ product.category.text_color }};">{{ product.name }}</span>
-                <div id="popover-{{ entry.id }}-{{ product.id }}" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip">
-                  {{ product.count }}
-                  <div class="tooltip-arrow" data-popper-arrow></div>
-                </div>
+                {% for pe in entry.product_entries.all %}
+                <span data-popover-target="popover-{{ entry.id }}-{{ pe.product.id }}" data-popover-placement="top" style="background-color: {{ pe.product.category.background_color }}; color: {{ pe.product.category.text_color }};">{{ pe.product.name }}</span>
                 {% if not forloop.last %} | {% endif %}
                 {% endfor %}
               </td>
@@ -127,26 +123,37 @@
 
 <hr class="my-2" />
 
-<caption class="px-5 py-2 text-sm font-semibold text-center text-gray-900 bg-white dark:text-white dark:bg-gray-800">
-  <div class="flex justify-evenly">
-    <div class="text-white">
-        Total Execution
-    </div>
-  </div>
-</caption>
+<div class="w-full mx-auto px-4 py-4">
+  <div class="overflow-x-auto shadow-md">
+    <table class="w-full uppercase font-medium border-spacing-0 border-collapse text-xs text-left rtl:text-right whitespace-nowrap text-gray-500 dark:text-gray-400">
+      <caption class="px-5 py-2 text-sm font-semibold text-center text-gray-900 bg-white dark:text-white dark:bg-gray-800">
+        <div class="flex justify-evenly">
+          Total Execution
+        </div>
+      </caption>
+    </table>
+  </div>  
+</div>
 
-<caption class="px-5 py-2 my-3 text-sm font-semibold text-center text-gray-900 bg-white dark:text-white dark:bg-gray-800">
-  <div class="flex justify-evenly">
-    {% for key, value in total_business.items %}
-    <div style="color: {{ value.color }}">
-      {{ key }}: {{ value.count }} - va - {{ value.total_va }}
-    </div>
-    {% endfor %}
-    <div class="text-white">
-      Total VA: <span class="font-bold">{{ total_business.total }}</span>
-    </div>
-  </div>
-</caption>
+
+<div class="w-full mx-auto px-4 py-4">
+  <div class="overflow-x-auto shadow-md">
+    <table class="w-full uppercase font-medium border-spacing-0 border-collapse text-xs text-left rtl:text-right whitespace-nowrap text-gray-500 dark:text-gray-400">
+      <caption class="px-5 py-2 text-sm font-semibold text-center text-gray-900 bg-white dark:text-white dark:bg-gray-800">
+        <div class="flex justify-evenly">
+          {% for key, value in total_business.items %}
+          <div style="color: {{ value.color }}">
+            {{ key }}: {{ value.count }} - va - {{ value.total_va }}
+          </div>
+          {% endfor %}
+          <div class="text-white">
+            Total VA: <span class="font-bold">{{ total_business.total }}</span>
+          </div>
+        </div>
+      </caption>
+    </table>
+  </div>  
+</div>
 
 
 {% endblock %}

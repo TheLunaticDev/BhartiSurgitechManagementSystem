@@ -152,8 +152,8 @@ class Configuration(models.Model):
     name = models.CharField(max_length=150)
     quantity = models.IntegerField()
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='configurations')
-    
 
+    
 class Entry(models.Model):
     EXPECTED_CHOICES = [
         ('-2', 'N/A'),
@@ -180,7 +180,7 @@ class Entry(models.Model):
     hospital_type = models.ForeignKey(HospitalType, on_delete=models.CASCADE)
     stage = models.ForeignKey(Stage, on_delete=models.CASCADE)
     expected = models.CharField(max_length=2, choices=EXPECTED_CHOICES)
-    products = models.ManyToManyField(Product, through='ProductEntry')
+    products = models.ManyToManyField(Product, through='ProductEntry', related_name='entries')
     notes = models.CharField(max_length=2000, blank=True)
     created_on = models.DateTimeField(auto_now_add=True)
     has_been_executed = models.BooleanField(default=False)
@@ -193,6 +193,20 @@ class Entry(models.Model):
 
     def va(self):
         total_value = sum(product_entry.count * product_entry.product.va() for product_entry in self.product_entries.all())
+        return total_value
+
+    def execution_va(self):
+        total_value = 0
+        for product_entry in self.product_entries.all():
+            if product_entry.has_execution:
+                if product_entry.execution_count and product_entry.execution_va:
+                    total_value += (product_entry.execution_count * product_entry.execution_va)
+                elif product_entry.execution_count and product_entry.execution_va == None:
+                    total_value += (product_entry.execution_count * product_entry.product.va())
+                elif product_entry.execution_count == None and product_entry.execution_va:
+                    total_value += (product_entry.count * product_entry.execution_va)
+                else:
+                    total_value += (product_entry.count * product_entry.product.va())
         return total_value
 
     def time_since_creation(self):
@@ -225,6 +239,9 @@ class ProductEntry(models.Model):
     entry = models.ForeignKey(Entry, on_delete=models.CASCADE, related_name='product_entries')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_entries')
     count = models.PositiveIntegerField(default=1)
+    has_execution = models.BooleanField(default=False, blank=True)
+    execution_count = models.PositiveIntegerField(default=0, blank=True, null=True)
+    execution_va = models.DecimalField(default=0.0, max_digits=3, decimal_places=1, blank=True, null=True)
 
     def __str__(self):
         return f'{self.product.name} - {self.count}'
@@ -232,7 +249,7 @@ class ProductEntry(models.Model):
     class Meta:
         verbose_name_plural = 'ProductEntries'
 
-
+        
 class Doctor(models.Model):
     name = models.CharField(max_length=255)
     speciality = models.CharField(max_length=255)

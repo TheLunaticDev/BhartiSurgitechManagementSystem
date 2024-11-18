@@ -1,0 +1,42 @@
+{% load add_attr %}
+<div>
+  <div class="pb-2 text-sm text-yellow-800 text-center rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300">
+    <span class="font-medium">{{ entry.institute }}</span>
+  </div>
+  <hr class="text-white mb-2" />
+  <form method="post" action="{% url 'crm_change_execution_details' entry.id %}">
+    {% csrf_token %}
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" class="p-4">
+            </th>
+            <th scope="col" class="px-6 py-3">Product</th>
+            <th scope="col" class="px-6 py-3">Count</th>
+            <th scope="col" class="px-6 py-3">VA</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for pe in product_entries %}
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <td class="w-4 p-4">
+              <div class="flex items-center">
+                <input type="checkbox" id="selected-products" name="selected-products" value="{{ pe.id }}" {% if pe.has_execution %}checked="checked"{% endif %} />
+                <label for="selected-products" class="sr-only">checkbox</label>
+              </div>
+            </td>
+            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ pe.product.name }}</th>
+            <td class="px-6 py-4">
+              <input type="number" id="{{ pe.id }}-count" name="{{ pe.id }}-count" data-input-counter aria-describedby="helper-text-explanation" class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" {% if pe.execution_count is None %}placeholder="{{ pe.count }}"{% endif %} value="{{ pe.execution_count }}" required />
+            </td>
+            <td class="px-6 py-4">
+              <input type="number" step="0.1" id="{{ pe.id }}-va" name="{{ pe.id }}-va" data-input-counter aria-describedby="helper-text-explanation" class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" {% if pe.execution_va is None %}placeholder="{{ pe.product.va }}"{% endif %} value="{{ pe.execution_va }}" required />
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 my-4 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Save Changes</button>
+  </form>
+</div>

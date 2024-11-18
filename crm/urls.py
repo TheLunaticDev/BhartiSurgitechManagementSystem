@@ -17,4 +17,5 @@ urlpatterns = [
     path('manager/add/entry/', views.add_new_entry_as_manager, name='add_new_entry_as_manager'),
     path('execution/toggle/<int:entry_id>/', views.toggle_crm_execution, name='crm_toggle_execution'),
     path('execution/render/table/<int:user_id>/', views.render_execution_table_for_user, name='crm_render_execution_table_for_user'),
+    path('execution/change/<int:entry_id>/', views.change_execution_details, name='crm_change_execution_details'),
 ]
