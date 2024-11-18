@@ -103,8 +103,8 @@
                 {{ entry.total_products }}
               </td>
               <td class="px-3 py-0">
-                {% if entry.va is not None %}
-                {{ entry.va|floatformat:1 }}
+                {% if entry.execution_va is not None %}
+                {{ entry.execution_va|floatformat:1 }}
                 {% endif %}
               </td>
               <td class="px-3 py-0">
@@ -142,9 +142,11 @@
       <caption class="px-5 py-2 text-sm font-semibold text-center text-gray-900 bg-white dark:text-white dark:bg-gray-800">
         <div class="flex justify-evenly">
           {% for key, value in total_business.items %}
+          {% if not forloop.last %}
           <div style="color: {{ value.color }}">
             {{ key }}: {{ value.count }} - va - {{ value.total_va }}
           </div>
+          {% endif %}
           {% endfor %}
           <div class="text-white">
             Total VA: <span class="font-bold">{{ total_business.total }}</span>
