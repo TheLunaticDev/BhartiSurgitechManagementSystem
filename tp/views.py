@@ -76,6 +76,8 @@ def add_entry_from_crm(request):
             new_tp_entry.save()
             new_tp_entry.products.set(entry.products.all())
             new_tp_entry.save()
+            entry.has_been_sent_to_tp = True
+            entry.save()
         
         return redirect('tp_index_view')
 

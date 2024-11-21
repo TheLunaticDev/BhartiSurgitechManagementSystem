@@ -35,7 +35,13 @@ class StageGroupAdmin(admin.ModelAdmin):
 
 
 class StageAdmin(admin.ModelAdmin):
-    list_display = ['name', 'description', 'win', 'order', 'group']
+    list_display = ['name', 'description', 'win', 'order', 'group', 'tracks_for_tp']
+
+    def tracks_for_tp(self, obj):
+        return "Yes" if obj.tracks_tp_link else "No"
+
+    tracks_for_tp.short_description = "Track for TP?"
+    
 
 
 class AdministratorAdmin(admin.ModelAdmin):

@@ -77,7 +77,10 @@ class Stage(models.Model):
             MaxValueValidator(100),
         ]
     )
+
     group = models.ForeignKey(StageGroup, related_name='stages', on_delete=models.SET_NULL, null=True, blank=True)
+    tracks_tp_link = models.BooleanField(default=False, verbose_name="Track for TP?")
+
     order = models.IntegerField(
         default=0, 
         help_text='Set the order for this stage.'
@@ -184,12 +187,21 @@ class Entry(models.Model):
     notes = models.CharField(max_length=2000, blank=True)
     created_on = models.DateTimeField(auto_now_add=True)
     has_been_executed = models.BooleanField(default=False)
+    has_been_sent_to_tp = models.BooleanField(default=False)
 
     def yet_to_be_contacted(self):
         if self.stage.group and self.stage.group.name == 'BIRD':
             if self.created_on < timezone.now() - datetime.timedelta(days=2):
                 return True
         return False
+
+    def yet_to_be_sent_to_tp(self):
+        if self.stage.tracks_tp_link == True and self.has_been_sent_to_tp == True:
+            return False
+        elif self.stage.tracks_tp_link == True and self.has_been_sent_to_tp == False:
+            return True
+        else:
+            return False
 
     def va(self):
         total_value = sum(product_entry.count * product_entry.product.va() for product_entry in self.product_entries.all())

@@ -12,7 +12,7 @@
     </td>
     {% endif %}
     <th id="crmentry-{{ entry.id }}-institute" hx-get="{% if popover_for_crm %}{% url 'crm_popover_content' entry.id %}{% elif popover_for_cdb %}{% url 'cdb_popover_content' entry.id %}{% elif popover_for_tp %}{% url 'tp_popover_content' entry.id %}{% endif %}" hx-trigger="click" hx-target="#popover-content" hx-swap="innerHTML" hx-indicator=".htmx-indicator" scope="row" class="popover-trigger px-3 py-0 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-      <span class="flex {% if entry.yet_to_be_contacted %}text-red-800 dark:text-red-500{% endif %}">
+      <span class="flex {% if entry.yet_to_be_sent_to_tp %}text-red-800 dark:text-red-500{% endif %}">
         {% if entry.has_been_executed %}
         <span class="flex mx-px my-auto w-3 h-3 me-3 bg-yellow-300 rounded-full"></span>
         {% endif %}
