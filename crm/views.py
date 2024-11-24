@@ -411,6 +411,11 @@ def get_manager_entry_context(request, subordinate_id):
         stage_group_entries[group.name]['color'] = group.text_color
 
     for entry in entries:
+        if entry.is_in_tp(entry.owner.pk):
+            entry.IS_IN_TP = True
+        else:
+            entry.IS_IN_TP = False
+        
         if entry.stage.group:
             stage_group_entries[entry.stage.group.name]['count'] += 1
             stage_group_entries[entry.stage.group.name]['total_va'] += entry.va()
