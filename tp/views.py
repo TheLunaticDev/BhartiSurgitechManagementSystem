@@ -73,6 +73,8 @@ def add_entry_from_crm(request):
             new_tp_entry.discipline = entry.discipline
             new_tp_entry.hospital_type = entry.hospital_type
             new_tp_entry.stage = entry.stage
+            new_tp_entry.type = new_tp_entry.CRM
+            new_tp_entry.link = entry.id
             new_tp_entry.save()
             new_tp_entry.products.set(entry.products.all())
             new_tp_entry.save()
@@ -98,6 +100,8 @@ def add_entry_from_cdb(request):
             new_tp_entry.sector = entry.sector
             new_tp_entry.discipline = entry.discipline
             new_tp_entry.hospital_type = entry.hospital_type
+            new_tp_entry.type = new_tp_entry.CDB
+            new_tp_entry.link = entry.id
             new_tp_entry.save()
         
         return redirect('tp_index_view')

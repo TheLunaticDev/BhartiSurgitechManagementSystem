@@ -25,7 +25,17 @@ class Purpose(models.Model):
 
 
 class TPEntry(models.Model):
+    CRM = 'CRM'
+    CDB = 'CDB'
+    NA = 'NA'
+    TYPE_CHOICE = [
+        (CRM, 'CRM'),
+        (CDB, 'CDB'),
+        (NA, 'NA'),
+    ]
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tp_entries')
+    type = models.CharField(max_length=5, choices=TYPE_CHOICE, blank=True)
+    link = models.PositiveBigIntegerField(blank=True, null=True)
     institute = models.CharField(max_length=200)
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
     landmark = models.CharField(max_length=300, blank=True)

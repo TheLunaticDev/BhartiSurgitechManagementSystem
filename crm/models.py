@@ -203,6 +203,17 @@ class Entry(models.Model):
         else:
             return False
 
+    def is_in_tp(self, owner_id):
+        from tp.models import TPEntry
+        if self.stage.tracks_tp_link == False: # Because then don't care
+            print("Stopped Caring")
+            return True
+        if self.stage.tracks_tp_link == True:
+            if TPEntry.objects.filter(owner=owner_id, type=TPEntry.CRM, link=self.pk).exists():
+                print("Legit Shit!?")
+                return True
+        return False 
+
     def va(self):
         total_value = sum(product_entry.count * product_entry.product.va() for product_entry in self.product_entries.all())
         return total_value
