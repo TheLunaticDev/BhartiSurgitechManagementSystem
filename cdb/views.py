@@ -128,8 +128,6 @@ def cdbentry_list(request):
 
 @login_required
 def cdbentry_list_for_select_view(request):
-
-    print("CDBEntry for Select View Triggered........................")
     entries_per_page = 50
     page_number = request.GET.get('page', 1)
     
@@ -138,9 +136,8 @@ def cdbentry_list_for_select_view(request):
     
     page_obj = paginator.get_page(page_number)
 
-    for entry in page_obj:
-        print(entry)
-    
+    print(request.GET)
+
     return render(request, "cdb/partials/select/cdbentry_list.html", {"page_obj": page_obj})
 
 @login_required
@@ -153,9 +150,17 @@ def select_view(request):
     
     page_obj = paginator.get_page(page_number)
 
+    submitted_form = get_submitted_form(request)
+
     context = {
         'page_obj': page_obj,
         'states': State.objects.all(),
+        'districts': District.objects.all().order_by(Lower('name')),
+        'disciplines': Discipline.objects.all().order_by(Lower('name')),
+        'hospital_types': HospitalType.objects.all().order_by(Lower('name')),
+        'sectors': Sector.objects.all().order_by(Lower('name')),
+        'owners': User.objects.all().order_by(Lower('first_name'), Lower('last_name'), Lower('username')),
+        'submitted_form': submitted_form,
     }
 
     return render(request, 'cdb/select_view.html', context)

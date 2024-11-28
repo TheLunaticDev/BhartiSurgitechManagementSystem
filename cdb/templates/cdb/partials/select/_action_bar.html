@@ -1,6 +1,6 @@
 <div class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pt-4 pb-2">
   <div class="px-3">
-    <button data-modal-target="authentication-modal" data-modal-toggle="authentication-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    <button data-modal-target="filter-modal" data-modal-toggle="filter-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
       Manage Filters
     </button>
   </div>
@@ -30,14 +30,14 @@
   </div>
 </div>
 
-<div id="authentication-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+<div id="filter-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
   <div class="relative p-4 w-2/4 max-w-md max-h-full">
     <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
       <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
           Apply/Remove Filters
         </h3>
-        <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="authentication-modal">
+        <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="filter-modal">
           <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
           </svg>
@@ -45,78 +45,122 @@
         </button>
       </div>
       <div class="p-4 md:p-5">
-        <form class="space-y-4" action="{{ target_url }}">
+        <form hx-get="{% url 'cdbentry_list_for_select_view' %}" 
+              hx-target="#cdb_entries"
+              hx-swap="innerHTML"
+              class="space-y-4"
+              id="cdb_filter_form">
           <div>
-            <label for="expected" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">EXPECTED</label>
-            <select id="expected" name="expected" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option value="" selected>No Filter</option>
-              <option value="-1">BEYOND</option>
-              <option value="0">JAN</option>
-              <option value="1">FEB</option>
-              <option value="2">MAR</option>
-              <option value="3">APR</option>
-              <option value="4">MAY</option>
-              <option value="5">JUN</option>
-              <option value="6">JUL</option>
-              <option value="7">AUG</option>
-              <option value="8">SEP</option>
-              <option value="9">NOV</option>
-              <option value="10">DEC</option>
-            </select>
+            <button id="FilterStatesButton" data-dropdown-toggle="FilterStatesCheckbox" class="w-full items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Select States<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+            </svg>
+            </button>
+            <div id="FilterStatesCheckbox" class="z-10 hidden w-full bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
+                <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="FilterStatesButton">
+                  {% for state in states %}
+                  <li class="">
+                    <div class="flex items-center">
+                      <input id="filter_state_{{ state.id }}" type="checkbox" name="filter_state" value="{{ state.id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                      <label for="filter_state_{{ state.id }}" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap">{{ state.name }}</label>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+            </div>
           </div>
           <div>
-            <label for="va" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">VA</label>
-            <input type="number" step="0.1" id="va" name="va" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+            <button id="FilterDistrictsButton" data-dropdown-toggle="FilterDistrictsCheckbox" class="w-full items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Select Districts<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+            </svg>
+            </button>
+            <div id="FilterDistrictsCheckbox" class="z-10 hidden w-full bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
+                <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="FilterDistrictsButton">
+                  {% for district in districts %}
+                  <li class="">
+                    <div class="flex items-center">
+                      <input id="filter_district_{{ district.id }}" type="checkbox" name="filter_district" value="{{ district.id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                      <label for="filter_district_{{ district.id }}" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap">{{ district.name }}</label>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+            </div>
           </div>
           <div>
-            <label for="stage" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stage</label>
-            <select id="stage" name="stage" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option value="" selected>No Filter</option>
-              {% for stage in stages %}
-              <option value="{{ stage.id }}">{{ stage.name }}</option>
-              {% endfor %}
-            </select>
+            <button id="FilterDisciplinesButton" data-dropdown-toggle="FilterDisciplinesCheckbox" class="w-full items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Select Disciplines<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+            </svg>
+            </button>
+            <div id="FilterDisciplinesCheckbox" class="z-10 hidden w-full bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
+                <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="FilterDisciplinesButton">
+                  {% for discipline in disciplines %}
+                  <li class="">
+                    <div class="flex items-center">
+                      <input id="filter_discipline_{{ discipline.id }}" type="checkbox" name="filter_discipline" value="{{ discipline.id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                      <label for="filter_discipline_{{ discipline.id }}" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap">{{ discipline.name }}</label>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+            </div>
           </div>
           <div>
-            <label for="state" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">State</label>
-            <select id="state" name="state" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option value="" selected>No Filter</option>
-              {% for state in states %}
-              <option value="{{ state.id }}">{{ state.name }}</option>
-              {% endfor %}
-            </select>
+            <button id="FilterHospitalTypeButton" data-dropdown-toggle="FilterHospitalTypeCheckbox" class="w-full items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Select Hospital Types<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+            </svg>
+            </button>
+            <div id="FilterHospitalTypeCheckbox" class="z-10 hidden w-full bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
+                <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="FilterHospitalTypeButton">
+                  {% for ht in hospital_types %}
+                  <li class="">
+                    <div class="flex items-center">
+                      <input id="filter_hospital_type_{{ ht.id }}" type="checkbox" name="filter_hospital_type" value="{{ ht.id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                      <label for="filter_hospital_type_{{ ht.id }}" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap">{{ ht.name }}</label>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+            </div>
           </div>
           <div>
-            <label for="stage" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">District</label>
-            <select id="district" name="district" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option value="" selected>No Filter</option>
-              {% for district in districts %}
-              <option value="{{ district.id }}">{{ district.name }}</option>
-              {% endfor %}
-            </select>
+            <button id="FilterSectorButton" data-dropdown-toggle="FilterSectorCheckbox" class="w-full items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Select Sectors<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+            </svg>
+            </button>
+            <div id="FilterSectorCheckbox" class="z-10 hidden w-full bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
+                <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="FilterSectorButton">
+                  {% for sector in sectors %}
+                  <li class="">
+                    <div class="flex items-center">
+                      <input id="filter_sector_{{ sector.id }}" type="checkbox" name="filter_sector" value="{{ sector.id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                      <label for="filter_sector_{{ sector.id }}" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap">{{ sector.name }}</label>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+            </div>
           </div>
           <div>
-            <label for="area" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Area</label>
-            <select id="area" name="area" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option value="" selected>No Filter</option>
-              {% for area in areas %}
-              <option value="{{ area.id }}">{{ area.name }}</option>
-              {% endfor %}
-            </select>
+            <button id="FilterOwnerButton" data-dropdown-toggle="FilterOwnerCheckbox" class="w-full items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Select Owners<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+            </svg>
+            </button>
+            <div id="FilterOwnerCheckbox" class="z-10 hidden w-full bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
+                <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="FilterOwnerButton">
+                  {% for owner in owners %}
+                  <li class="">
+                    <div class="flex items-center">
+                      <input id="filter_owner_{{ owner.id }}" type="checkbox" name="filter_owner" value="{{ owner.id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                      <label for="filter_owner_{{ owner.id }}" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap">{% if owner.first_name %}{{ owner.first_name }}{% if owner.last_name %} {{ owner.last_name }}{% endif %}{% else %}{{ owner.username }}{% endif %}</label>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+            </div>
           </div>
-          <div>
-            <label for="product" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">PRODUCT</label>
-            <select id="produce" name="product" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option value="" selected>No Filter</option>
-              {% for product in products %}
-              <option value="{{ product.id }}">{{ product.name }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Apply Filters</button>
+          <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" data-modal-hide="filter-modal">Apply Filters</button>
         </form>
       </div>
     </div>
   </div>
 </div> 
-
