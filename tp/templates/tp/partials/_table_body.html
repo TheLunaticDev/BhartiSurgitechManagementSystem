@@ -28,6 +28,10 @@
       <span data-tooltip-target="tooltip-stage-{{ entry.id }}">
         {{ entry.stage.name }}
       </span>
+      <div id="tooltip-stage-{{ entry.id }}" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+        {{ entry.stage.description }}
+        <div class="tooltip-arrow" data-popper-arrow></div>
+      </div>
     </td>
     {% endif %}
     {% if not hide_win %}

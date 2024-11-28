@@ -5,7 +5,32 @@ from django.urls import reverse
 from django.db.models import F
 from .models import TPEntry
 from crm.models import Entry
+from crm.views import get_subordinates
 from cdb.models import CDBEntry
+
+@login_required
+def manager_index_view_for_subordinate(request, subordinate_id):
+    entries = TPEntry.objects.all().filter(owner=subordinate_id).order_by(F('schedule').asc(nulls_last=True), F('stage__order').asc(nulls_last=True))
+    context = {
+        'entries': entries,
+        'subordinate_id': subordinate_id,
+    }
+    return render(request, 'tp/index_view.html', context)
+
+@login_required
+def manager_index_view_initial(request):
+    subordinates = get_subordinates(request)
+
+    for subordinate in subordinates:
+        setattr(subordinate, 'total_entries', TPEntry.objects.filter(owner=subordinate).count())
+        not_visited = TPEntry.objects.filter(owner=subordinate, not_visited=True).count()
+        setattr(subordinate, 'not_visited_entries', not_visited)
+
+    context = {
+        'subordinates': subordinates
+    }
+    return render(request, 'tp/manager_index_initial.html', context)
+
 
 def tp_toggle_not_visited(request, entry_id):
     entry = get_object_or_404(TPEntry, id=entry_id)

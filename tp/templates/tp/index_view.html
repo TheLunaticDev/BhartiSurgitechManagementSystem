@@ -2,7 +2,7 @@
 {% block content %}
 {% url 'admin:tp_tpentry_add' as add_url %}
 {% url 'tp_edit_view' as edit_url %}
-{% include 'crm/includes/_action_bar.html' with add_url=add_url show_add=True show_edit=True edit_url=edit_url %}
+{% include 'tp/partials/_action_bar.html' with add_url=add_url show_add=True show_edit=True edit_url=edit_url %}
 
 <div class="w-full mx-auto px-4">
   <div class="overflow-x-auto shadow-md">
