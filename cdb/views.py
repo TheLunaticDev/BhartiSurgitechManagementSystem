@@ -1,11 +1,18 @@
 from urllib.parse import urlparse
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, resolve
 from django.db.models import Q
+from django.db.models.functions import Lower
 from .models import CDBEntry
-from crm.models import State, District
+from crm.models import State, District, Discipline, HospitalType, Sector
+
+def cdb_add_state_filter(request):
+    state = request.GET.get('add_state')
+    state = get_object_or_404(State, id=state)
+
 
 def get_submitted_form(request):
     form = {}
@@ -47,16 +54,34 @@ def cdb_popover_content(request, entry_id):
     return render(request, 'cdb/partials/_popover_content.html', context)
 
 def get_cdb_entries(request):
-    cdbentries = CDBEntry.objects.all().order_by('owner', 'area__district__state__name', 'area__district__name', 'area__name')
+    filter_states = request.GET.getlist('filter_state')
+    filter_districts = request.GET.getlist('filter_district')
+    filter_disciplines = request.GET.getlist('filter_discipline')
+    filter_hospital_types = request.GET.getlist('filter_hospital_type')
+    filter_sectors = request.GET.getlist('filter_sector')
+    filter_owners = request.GET.getlist('filter_owner')
 
-    state = request.GET.get('add_state')
-    district = request.GET.get('add_district')
+    filter_conditions = Q()
+    
+    if filter_states:
+        filter_conditions |= Q(area__district__state__id__in=filter_states)
+    
+    if filter_districts:
+        filter_conditions |= Q(area__district__id__in=filter_districts)
 
-    if state:
-        cdbentries = cdbentries.filter(area__district__state__code=state)
+    if filter_disciplines:
+        filter_conditions |= Q(discipline__id__in=filter_disciplines)
 
-    if district:
-        cdbentries = cdbentries.filter(area__district=district)
+    if filter_hospital_types:
+        filter_conditions |= Q(hospital_type__id__in=filter_hospital_types)
+
+    if filter_sectors:
+        filter_conditions |= Q(sector__id__in=filter_sectors)
+
+    if filter_owners:
+        filter_conditions |= Q(owner__id__in=filter_owners)
+
+    cdbentries = CDBEntry.objects.filter(filter_conditions).order_by('owner', 'area__district__state__name', 'area__district__name', 'area__name')
 
     print(len(cdbentries))
     
@@ -78,7 +103,11 @@ def index_view(request):
     context = {
         'page_obj': page_obj,
         'states': State.objects.all(),
-        'districts': District.objects.all(),
+        'districts': District.objects.all().order_by(Lower('name')),
+        'disciplines': Discipline.objects.all().order_by(Lower('name')),
+        'hospital_types': HospitalType.objects.all().order_by(Lower('name')),
+        'sectors': Sector.objects.all().order_by(Lower('name')),
+        'owners': User.objects.all().order_by(Lower('first_name'), Lower('last_name'), Lower('username')),
         'submitted_form': submitted_form,
     }
     return render(request, 'cdb/index_view.html', context)

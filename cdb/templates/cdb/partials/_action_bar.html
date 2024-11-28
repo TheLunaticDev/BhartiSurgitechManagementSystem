@@ -56,26 +56,122 @@
               class="space-y-4"
               id="cdb_filter_form">
           <div>
-            <label for="add_state" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">State</label>
-            <select id="add_state" name="add_state" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    hx-get="{% url 'filter_districts' %}"
-                    hx-trigger="change" hx-target="#add_district"
-                    hx-swap="innerHTML" name="add_state">
-              <option value="" selected>No Filter</option>
-              {% for state in states %}
-              <option value={{ state.code }} {% if submitted_form.state == state.code %}selected{% endif %}>{{ state.name }}</option>
-              {% endfor %}
-            </select>
+            <button id="FilterStatesButton" data-dropdown-toggle="FilterStatesCheckbox" class="w-full items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Select States<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+            </svg>
+            </button>
+            <!-- Dropdown menu -->
+            <div id="FilterStatesCheckbox" class="z-10 hidden w-full bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
+                <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="FilterStatesButton">
+                  {% for state in states %}
+                  <li class="">
+                    <div class="flex items-center">
+                      <input id="filter_state_{{ state.id }}" type="checkbox" name="filter_state" value="{{ state.id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                      <label for="filter_state_{{ state.id }}" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap">{{ state.name }}</label>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+            </div>
           </div>
           <div>
-            <label for="add_district" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">District</label>
-            <select id="add_district" name="add_district" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option value="" selected>No Filter</option>
-              {% for district in districts %}
-              <option value={{ district.id }} {% if submitted_form.district == district.id %}selected{% endif %}>{{ district.name }}</option>
-              {% endfor %}
-            </select>
+            <button id="FilterDistrictsButton" data-dropdown-toggle="FilterDistrictsCheckbox" class="w-full items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Select Districts<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+            </svg>
+            </button>
+            <!-- Dropdown menu -->
+            <div id="FilterDistrictsCheckbox" class="z-10 hidden w-full bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
+                <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="FilterDistrictsButton">
+                  {% for district in districts %}
+                  <li class="">
+                    <div class="flex items-center">
+                      <input id="filter_district_{{ district.id }}" type="checkbox" name="filter_district" value="{{ district.id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                      <label for="filter_district_{{ district.id }}" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap">{{ district.name }}</label>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+            </div>
           </div>
+          <div>
+            <button id="FilterDisciplinesButton" data-dropdown-toggle="FilterDisciplinesCheckbox" class="w-full items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Select Disciplines<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+            </svg>
+            </button>
+            <!-- Dropdown menu -->
+            <div id="FilterDisciplinesCheckbox" class="z-10 hidden w-full bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
+                <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="FilterDisciplinesButton">
+                  {% for discipline in disciplines %}
+                  <li class="">
+                    <div class="flex items-center">
+                      <input id="filter_discipline_{{ discipline.id }}" type="checkbox" name="filter_discipline" value="{{ discipline.id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                      <label for="filter_discipline_{{ discipline.id }}" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap">{{ discipline.name }}</label>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+            </div>
+          </div>
+          <div>
+            <button id="FilterHospitalTypeButton" data-dropdown-toggle="FilterHospitalTypeCheckbox" class="w-full items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Select Hospital Types<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+            </svg>
+            </button>
+            <!-- Dropdown menu -->
+            <div id="FilterHospitalTypeCheckbox" class="z-10 hidden w-full bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
+                <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="FilterHospitalTypeButton">
+                  {% for ht in hospital_types %}
+                  <li class="">
+                    <div class="flex items-center">
+                      <input id="filter_hospital_type_{{ ht.id }}" type="checkbox" name="filter_hospital_type" value="{{ ht.id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                      <label for="filter_hospital_type_{{ ht.id }}" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap">{{ ht.name }}</label>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+            </div>
+          </div>
+          <div>
+            <button id="FilterSectorButton" data-dropdown-toggle="FilterSectorCheckbox" class="w-full items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Select Sectors<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+            </svg>
+            </button>
+            <!-- Dropdown menu -->
+            <div id="FilterSectorCheckbox" class="z-10 hidden w-full bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
+                <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="FilterSectorButton">
+                  {% for sector in sectors %}
+                  <li class="">
+                    <div class="flex items-center">
+                      <input id="filter_sector_{{ sector.id }}" type="checkbox" name="filter_sector" value="{{ sector.id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                      <label for="filter_sector_{{ sector.id }}" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap">{{ sector.name }}</label>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+            </div>
+          </div>
+          <div>
+            <button id="FilterOwnerButton" data-dropdown-toggle="FilterOwnerCheckbox" class="w-full items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Select Owners<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+            </svg>
+            </button>
+            <!-- Dropdown menu -->
+            <div id="FilterOwnerCheckbox" class="z-10 hidden w-full bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
+                <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="FilterOwnerButton">
+                  {% for owner in owners %}
+                  <li class="">
+                    <div class="flex items-center">
+                      <input id="filter_owner_{{ owner.id }}" type="checkbox" name="filter_owner" value="{{ owner.id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                      <label for="filter_owner_{{ owner.id }}" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 whitespace-nowrap">{% if owner.first_name %}{{ owner.first_name }}{% if owner.last_name %} {{ owner.last_name }}{% endif %}{% else %}{{ owner.username }}{% endif %}</label>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+            </div>
+          </div>
+
+
+
           <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" data-modal-hide="filter-modal">Apply Filters</button>
         </form>
       </div>
