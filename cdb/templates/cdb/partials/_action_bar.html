@@ -53,6 +53,12 @@
         <form hx-get="{% url 'cdbentry_list' %}" 
               hx-target="#cdb_entries"
               hx-swap="innerHTML"
+              hx-on:htmx:after-request="
+                htmx.ajax('GET', '{% url 'cdb_update_tbody' %}', {
+                  target: '#cdb_thead',
+                  swap: 'outerHTML',
+                  values: new FormData(document.querySelector('#cdb_filter_form')),
+                  })"
               class="space-y-4"
               id="cdb_filter_form">
           <div>
@@ -169,4 +175,3 @@
     </div>
   </div>
 </div> 
-

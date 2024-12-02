@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index_view, name='cdb_index_view'),
+    path('tbody/', views.cdb_update_tbody, name='cdb_update_tbody'),
     path('cdbentry/', views.cdbentry_list, name='cdbentry_list'),
     path('cdbentry/select/', views.cdbentry_list_for_select_view, name='cdbentry_list_for_select_view'),
     path('select/', views.select_view, name='cdb_select_view'),
