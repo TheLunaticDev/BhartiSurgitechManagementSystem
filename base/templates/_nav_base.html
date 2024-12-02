@@ -41,10 +41,10 @@
             <ul class="py-2 text-sm text-gray-700 dark:text-gray-400" aria-labelledby="dropdownLargeButton">
               {% if is_manager %}
               <li>
-                <a href="{% url 'crm_manager_index_view_initial' %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Subordinates' Entries</a>
+                <a href="{% url 'crm_manager_index_view_initial' %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">CRM</a>
               </li>
               <li>
-                <a hx-get="{% url 'tp_manager_index_view_initial' %}" hx-target="#subordinate_list" hx-swap="innerHTML" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" data-drawer-target="drawer-navigation" data-drawer-show="drawer-navigation" aria-controls="drawer-navigation">Subordinates' Tour Plans</a>
+                <a hx-get="{% url 'tp_manager_index_view_initial' %}" hx-target="#subordinate_list" hx-swap="innerHTML" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" data-drawer-target="drawer-navigation" data-drawer-show="drawer-navigation" aria-controls="drawer-navigation">Tour Plans</a>
               </li>
               <li>
                 <a href="{% url 'crm_manager_execution_view' %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Bookings List</a>
