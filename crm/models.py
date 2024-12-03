@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 from base.models import Setting, Brochure
+from decimal import Decimal
 
 
 class Sector(models.Model):
@@ -229,7 +230,7 @@ class Entry(models.Model):
                 elif product_entry.execution_count == None and product_entry.execution_va:
                     total_value += (product_entry.count * product_entry.execution_va)
                 else:
-                    total_value += (product_entry.count * product_entry.product.va())
+                    total_value += (product_entry.count * Decimal(product_entry.product.va()))
         return total_value
 
     def time_since_creation(self):
