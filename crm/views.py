@@ -152,7 +152,7 @@ def get_manager_booking_context(request):
                 product_entry = ProductEntry.objects.get(product=product, entry=entry)
                 if product_entry.has_booking:
                     product.count = product_entry.booking_count
-                    total_product += product.count
+                    total_products += product.count
             entry.total_products = total_products
             entries_with_products.append(entry)
     
