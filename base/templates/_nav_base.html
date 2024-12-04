@@ -47,7 +47,10 @@
                 <a hx-get="{% url 'tp_manager_index_view_initial' %}" hx-target="#subordinate_list" hx-swap="innerHTML" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" data-drawer-target="drawer-navigation" data-drawer-show="drawer-navigation" aria-controls="drawer-navigation">Tour Plans</a>
               </li>
               <li>
-                <a href="{% url 'crm_manager_execution_view' %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Bookings List</a>
+                <a href="{% url 'crm_manager_booking_view' %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Bookings</a>
+              </li>
+              <li>
+                <a href="{% url 'crm_manager_execution_view' %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Executions</a>
               </li>
               {% endif %}
               <li>

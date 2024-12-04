@@ -187,6 +187,7 @@ class Entry(models.Model):
     products = models.ManyToManyField(Product, through='ProductEntry', related_name='entries')
     notes = models.CharField(max_length=2000, blank=True)
     created_on = models.DateTimeField(auto_now_add=True)
+    has_been_booked = models.BooleanField(default=False)
     has_been_executed = models.BooleanField(default=False)
     has_been_sent_to_tp = models.BooleanField(default=False)
 
@@ -219,6 +220,20 @@ class Entry(models.Model):
         total_value = sum(product_entry.count * product_entry.product.va() for product_entry in self.product_entries.all())
         return total_value
 
+    def booking_va(self):
+        total_value = 0
+        for product_entry in self.product_entries.all():
+            if product_entry.has_booking:
+                if product_entry.booking_count and product_entry.booking_va:
+                    total_value += (product_entry.booking_count * product_entry.booking_va)
+                elif product_entry.booking_count and product_entry.booking_va == None:
+                    total_value += (product_entry.booking_count * product_entry.product.va())
+                elif product_entry.booking_count == None and product_entry.booking_va:
+                    total_value += (product_entry.count * product_entry.booking_va)
+                else:
+                    total_value += (product_entry.count * Decimal(product_entry.product.va()))
+        return total_value
+
     def execution_va(self):
         total_value = 0
         for product_entry in self.product_entries.all():
@@ -232,6 +247,7 @@ class Entry(models.Model):
                 else:
                     total_value += (product_entry.count * Decimal(product_entry.product.va()))
         return total_value
+
 
     def time_since_creation(self):
         current_time = timezone.now()
@@ -263,6 +279,9 @@ class ProductEntry(models.Model):
     entry = models.ForeignKey(Entry, on_delete=models.CASCADE, related_name='product_entries')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_entries')
     count = models.PositiveIntegerField(default=1)
+    has_booking = models.BooleanField(default=False, blank=True)
+    booking_count = models.PositiveIntegerField(default=0, blank=True, null=True)
+    booking_va = models.DecimalField(default=0.0, max_digits=3, decimal_places=1, blank=True, null=True)
     has_execution = models.BooleanField(default=False, blank=True)
     execution_count = models.PositiveIntegerField(default=0, blank=True, null=True)
     execution_va = models.DecimalField(default=0.0, max_digits=3, decimal_places=1, blank=True, null=True)
