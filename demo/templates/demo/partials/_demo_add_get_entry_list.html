@@ -1,0 +1,5 @@
+<select id="add-demo-entry" name="add-demo-entry" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+  {% for entry in entries %}
+  <option value="{{ entry.id }}">{{ entry }} from {{ entry.area.name }}|{{ entry.area.district.name }}|{{ entry.area.district.state.code }}</option>
+  {% endfor %}
+</select>

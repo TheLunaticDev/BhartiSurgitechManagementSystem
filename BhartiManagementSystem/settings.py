@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'base',
     'crm',
     'cdb',
+    'demo',
     'tp',
     'sysadmin',
     'productlist',
