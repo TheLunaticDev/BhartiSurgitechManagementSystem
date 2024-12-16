@@ -11,7 +11,7 @@
         <input type="hidden" name="institute" value="{{ entry.institute }}" required />
         <input type="hidden" name="area" value="{{ entry.area.id }}" required />
         <label for="product" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" required>Select a Product</label>
-        <select id="product" name="product" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        <select id="product" name="product" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" multiple required>
           {% for product in products %}
           <option value="{{ product.id }}">{{ product.name }}</option>
           {% endfor %}

@@ -1,8 +1,9 @@
 {% load compress %}
 <tbody>
   {% for entry in demo_entries %}
+  {% with entry.entry as entry %}
   <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-    <th scope="row" class="popover-trigger px-3 py-0 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+    <th scope="row" hx-get="{% url 'demo_popover_content' entry.id %}" hx-trigger="click" hx-target="#popover-content" hx-swap="innerHTML" class="popover-trigger px-3 py-0 font-medium text-gray-900 whitespace-nowrap dark:text-white">
       {{ entry.institute }}
     </th>
     <td class="px-3 py-0">
@@ -11,7 +12,9 @@
       {{ entry.area.district.state.code }}
     </td>
     <td class="px-3 py-0">
-      {{ entry.product }}
+      {% for product in entry.products.all %}
+      {{ product.product }} {% if not forloop.last %} | {% endif %}
+      {% endfor %}
     </td>
     <td scope="col" class="px-3 py-0">
       {{ entry.start_datetime|date:"d-m-Y" }}
@@ -32,19 +35,48 @@
       {{ entry.user.username }}
       {% endif %}
     </td>
-    <td class="px-3 py-0">
-      Notes
+    <td class="px-0 py-0">
+      <a href="#" aria-current="page" class="inline-flex items-center px-0 py-0 text-xs text-blue-700 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark: dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+        <svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+        </svg>
+        Edit
+      </a>
+      <a href="#" class="inline-flex items-center px-0 py-0 text-xs text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark: dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+        <svg class="w-3 h-3 mx-px text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 9h6m-6 3h6m-6 3h6M6.996 9h.01m-.01 3h.01m-.01 3h.01M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/>
+        </svg>
+        Notes
+      </a>
+      <button type="button" data-modal-target="popup-delete-modal" data-modal-toggle="popup-delete-modal" hx-get="{% url 'demo_delete_entry' entry.id %}" hx-trigger="click" hx-target="#popup-delete-modal-content" hx-swap="innerHTML" class="inline-flex items-center px-0 py-0 text-xs text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark: dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+        <svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+        </svg>
+        Delete
+      </a>
     </td>
   </tr>
-{% endfor %}
-
-{% if use_form %}
-</form>
-{% endif %}
+  {% endwith %}
+  {% endfor %}
 
 <div data-popover id="popover-default" role="tooltip" class="absolute z-10 invisible inline-block w-96 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:border-gray-600 dark:bg-gray-800">
   <div id="popover-content" class="p-2">
   </div>
+</div>
+
+<div id="popup-delete-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-delete-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div id="popup-delete-modal-content" class="p-4 md:p-5 text-center">
+            </div>
+        </div>
+    </div>
 </div>
 
 {% compress js %}

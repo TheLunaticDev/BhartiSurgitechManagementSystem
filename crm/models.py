@@ -189,6 +189,7 @@ class Entry(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     has_been_booked = models.BooleanField(default=False)
     has_been_executed = models.BooleanField(default=False)
+    is_in_demo = models.BooleanField(default=False)
     has_been_sent_to_tp = models.BooleanField(default=False)
 
     def yet_to_be_contacted(self):
