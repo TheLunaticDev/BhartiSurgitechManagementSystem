@@ -64,7 +64,26 @@ def update_field(request, entry_id, field_name):
 def tp_popover_content(request, entry_id):
     entry = get_object_or_404(TPEntry, id=entry_id)
     popover_edit_link = reverse('admin:tp_tpentry_change', args=(entry_id,))
-    return render(request, 'tp/partials/_popover_content.html', {'entry': entry, 'popover_edit_link': popover_edit_link})
+    try:
+        crm_entry = Entry.objects.get(id=entry.link)
+    except Entry.DoesNotExist:
+        crm_entry = None
+
+    try:
+        cdb_entry = CDBEntry.objects.get(id=entry.link)
+    except CDBEntry.DoesNotExist:
+        cdb_entry = None
+        
+    context = {
+        'entry': entry,
+        'popover_edit_link': popover_edit_link,
+        'is_from_crm': True if entry.type == entry.CRM else False,
+        'is_from_cdb': True if entry.type == entry.CDB else False,
+        'crm_entry': crm_entry,
+        'cdb_entry': cdb_entry,
+    }
+
+    return render(request, 'tp/partials/_popover_content.html', context)
 
 @login_required
 def index_view(request):
