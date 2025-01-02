@@ -257,23 +257,23 @@ class Entry(models.Model):
             return "Today"
         elif time_diff < datetime.timedelta(days=7):
             days_ago = time_diff.days
-            return f'{days_ago} day{'s' if days_ago > 1 else ''} ago'
+            return f"{days_ago} day{'s' if days_ago > 1 else ''} ago"
         elif time_diff < datetime.timedelta(days=365):
             months_ago = time_diff.days // 30
             if months_ago < 1:
                 weeks_ago = time_diff.days // 7
-                return f'{weeks_ago} week{'s' if weeks_ago > 1 else ''} ago'
-            return f'{months_ago} month{'s' if months_ago > 1 else ''} ago'
+                return f"{weeks_ago} week{'s' if weeks_ago > 1 else ''} ago"
+            return f"{months_ago} month{'s' if months_ago > 1 else ''} ago"
         else:
             years_ago = time_diff.days // 365
             return f'{years_ago} year{'s' if years_ago > 1 else ''} ago'
         
-    def __str__(self):
-        return self.institute
+        def __str__(self):
+            return self.institute
 
-    class Meta:
-        verbose_name_plural = 'Entries'
-        ordering = ['stage']
+        class Meta:
+            verbose_name_plural = 'Entries'
+            ordering = ['stage']
 
 
 class ProductEntry(models.Model):
