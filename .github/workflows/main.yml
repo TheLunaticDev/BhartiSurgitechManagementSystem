@@ -59,7 +59,7 @@ jobs:
           source /var/www/BhartiSurgitechManagementSystem/.venv/bin/activate
           pip install -r requirements.txt
           python manage.py migrate
-          python manage.py collectstatic
+          python manage.py collectstatic --noinput
           cd ..
           cd static
           chown www-data:www-data styles.css
