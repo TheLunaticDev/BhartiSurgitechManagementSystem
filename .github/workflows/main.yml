@@ -56,7 +56,7 @@ jobs:
           ssh -i ~/.ssh/id_ed25519_digitalocean root@ms.bhartisurgitech.com << EOF
           cd /var/www/BhartiSurgitechManagementSystem
           git pull origin main
-          source /var/www/.venv/bin/activate
+          source /var/www/BhartiSurgitechManagementSystem/.venv/bin/activate
           pip install -r requirements.txt
           python manage.py migrate
           python manage.py collectstatic
