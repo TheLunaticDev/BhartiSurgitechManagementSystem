@@ -39,6 +39,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: test
+    environment: SECRETS
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -46,7 +47,8 @@ jobs:
       - name: Set up SSH for DigitalOcean
         run: |
           mkdir -p ~/.ssh
-          echo "$DO_SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519_digitalocean
+          echo "$SECRETS.DO_SSH_PRIVATE_KEY"
+          echo "$SECRETS.DO_SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519_digitalocean
           chmod 600 ~/.ssh/id_ed25519_digitalocean
           ssh-keyscan ms.bhartisurgitech.com >> ~/.ssh/known_hosts
 
