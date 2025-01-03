@@ -268,12 +268,12 @@ class Entry(models.Model):
             years_ago = time_diff.days // 365
             return f"{years_ago} year{'s' if years_ago > 1 else ''} ago"
         
-        def __str__(self):
-            return self.institute
+    def __str__(self):
+        return self.institute
 
-        class Meta:
-            verbose_name_plural = 'Entries'
-            ordering = ['stage']
+    class Meta:
+        verbose_name_plural = 'Entries'
+        ordering = ['stage']
 
 
 class ProductEntry(models.Model):
